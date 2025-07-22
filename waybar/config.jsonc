@@ -1,29 +1,32 @@
 {
   "layer": "top",
   "position": "top",
+  "exclusive": true,
+  "margin-top": 8,
+  "margin-left": 10,
+  "margin-right": 10,
+  "margin-bottom": 0,
+  "gtk-layer-shell": true,
   "modules-left": [
     "custom/appmenu"
   ],
   "modules-center": [
-    "hyprland/workspaces"
+    "clock",
+    "custom/weather"
   ],
   "modules-right": [
-    "clock"
+    "memory",
+    "cpu"
   ],
 
   "custom/appmenu": {
     "format": "\udb83\ude6f",
-    "on-click": "wofi --show drun --conf ~/.config/wofi/config --style ~/.config/wofi/styles.css",
+    "on-click": "wofi --show drun --show-icons --allow-images --conf ~/.config/wofi/config --style ~/.config/wofi/styles.css",
     "tooltip": false
   },
 
-  "hyprland/workspaces": {
-    "format": "{name}",
-    "persistence-workspaces": {"*": [1,2,3,4,5]}
-  },
-
   "clock": {
-    "format": "{:%I:%M %p}",
+    "format": "{:%I-:%M %p}",
     "format-alt": "{\uf133 %d/%m/%y}",
     "tooltip-format": "<span>{calendar}</span>",
     "calendar": {
@@ -35,5 +38,20 @@
         "today": "<span color='#ffcc66'><b>{}</b></span>"
       }
     }
+  },
+
+  "custom/weather": {
+    "format": "{}",
+    "exec": "~/.config/waybar/scripts/weather.sh",
+    "interval": "600",
+    "tooltip": false
+  },
+
+  "cpu": {
+    "format": "\uf4bc {usage}%"
+  },
+
+  "memory": {
+    "format": "\uefc5 {used:0.1f}G"
   }
 }
