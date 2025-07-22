@@ -1,0 +1,39 @@
+{
+  "layer": "top",
+  "position": "top",
+  "modules-left": [
+    "custom/appmenu"
+  ],
+  "modules-center": [
+    "hyprland/workspaces"
+  ],
+  "modules-right": [
+    "clock"
+  ],
+
+  "custom/appmenu": {
+    "format": "\udb83\ude6f",
+    "on-click": "wofi --show drun --conf ~/.config/wofi/config --style ~/.config/wofi/styles.css",
+    "tooltip": false
+  },
+
+  "hyprland/workspaces": {
+    "format": "{name}",
+    "persistence-workspaces": {"*": [1,2,3,4,5]}
+  },
+
+  "clock": {
+    "format": "{:%I:%M %p}",
+    "format-alt": "{\uf133 %d/%m/%y}",
+    "tooltip-format": "<span>{calendar}</span>",
+    "calendar": {
+      "default": "month",
+      "format": {
+        "months": "<span color='#ff6699'><b>{}</b></span>",
+        "days": "<span color='#cdd6f4'><b>{}</b></span>",
+        "weekdays": "<span color='#7CD37C'><b>{}</b></span>",
+        "today": "<span color='#ffcc66'><b>{}</b></span>"
+      }
+    }
+  }
+}

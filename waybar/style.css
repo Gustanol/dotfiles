@@ -1,0 +1,14 @@
+* {
+  font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", "Arimo Nerd Font", sans-serif;
+  font-size: 12px;
+}
+
+#clock {
+  font-size: 14px;
+}
+
+window#waybar {
+    background: #000000;
+    /*border-bottom: 3px solid rgba(100, 114, 125, 0.5);*/
+    color: #e5e9f0;
+}
