@@ -28,7 +28,7 @@
   },
 
   "clock": {
-    "format": "{:%I:%M}  -",
+    "format": "{:%I:%M}   -",
     "format-alt": "{\uf133 %d/%m/%y}",
     "tooltip-format": "<span>{calendar}</span>",
     "calendar": {

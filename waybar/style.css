@@ -3,10 +3,6 @@
   font-size: 12px;
 }
 
-#clock, #custom-weather {
-  font-family: 'JetBrainsMono Nerd Font';
-}
-
 #custom-weather {
   margin-left: 8px;
 }
@@ -21,17 +17,16 @@ window#waybar > box {
   padding: 6px 10px;
 }
 
-#memory, #cpu {
+#memory, #cpu, #clock, #custom-weather {
   font-family: 'JetBrainsMono Nerd Font';
 }
 
-#memory {
+#memory, #custom-temp {
   margin-right: 10px;
 }
 
 #custom-network-info {
   padding: 0 10px;
-  color: #ffffff;
   font-family: 'JetBrainsMono Nerd Font';
 }
 
