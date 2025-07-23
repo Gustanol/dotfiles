@@ -10,9 +10,17 @@ border-radius=8
 default-timeout=5000
 padding=8
 margin=10
-anchor=top-right
+anchor=bottom-right
 
 max-visible=5
 layer=overlay
 ignore-timeout=false
 
+[urgency=low]
+background-color=#313244
+border-color=#a6adc8
+
+[urgency=critical]
+background-color=#f38ba8
+border-color=#f38ba8
+text-color=#1e1e2e
