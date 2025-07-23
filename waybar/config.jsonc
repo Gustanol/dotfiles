@@ -8,7 +8,8 @@
   "margin-bottom": 0,
   "gtk-layer-shell": true,
   "modules-left": [
-    "custom/appmenu"
+    "custom/appmenu",
+    "custom/network-info"
   ],
   "modules-center": [
     "clock",
@@ -22,11 +23,12 @@
   "custom/appmenu": {
     "format": "\udb83\ude6f",
     "on-click": "wofi --show drun --show-icons --allow-images --conf ~/.config/wofi/config --style ~/.config/wofi/styles.css",
-    "tooltip": false
+    "tooltip": true,
+    "tooltip-format": "Apps"
   },
 
   "clock": {
-    "format": "{:%I-:%M %p}",
+    "format": "{:%I:%M}  -",
     "format-alt": "{\uf133 %d/%m/%y}",
     "tooltip-format": "<span>{calendar}</span>",
     "calendar": {
@@ -40,6 +42,15 @@
     }
   },
 
+  "custom/network-info": {
+    "format": "{text}",
+    "exec": "~/.config/waybar/scripts/network_info.sh",
+    "interval": 10,
+    "return-type": "json",
+    "tooltip": true
+  },
+
+
   "custom/weather": {
     "format": "{}",
     "exec": "~/.config/waybar/scripts/weather.sh",
@@ -52,6 +63,6 @@
   },
 
   "memory": {
-    "format": "\uefc5 {used:0.1f}G"
+    "format": "\uefc5 {used:0.1f}gb"
   }
 }

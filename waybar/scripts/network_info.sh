@@ -16,13 +16,12 @@ gateway=$(ip route | grep default | awk '{print $3}')
 if [[ "$iface" == "wlan"* ]]; then
   ssid=$(iw dev "$iface" info | grep ssid | awk '{print $2}')
 else
-  ssid="Conexão cabeada"
+  ssid="Cabled conection"
 fi
 
 # JSON output
+tooltip="Network: $ssid\rInterface: $iface\rMask: /$cidr\rGateway: $gateway"
 cat <<EOF
-{
-  "text": "$ip",
-  "tooltip": "Network: $ssid\nInterface: $iface\nMask: /$cidr\nGateway: $gateway"
-}
+{"text":"$ip","tooltip":"$tooltip"}
 EOF
+

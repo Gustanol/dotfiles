@@ -3,28 +3,38 @@
   font-size: 12px;
 }
 
-#clock {
-  font-size: 14px;
-  margin-right: 8px;
+#clock, #custom-weather {
+  font-family: 'JetBrainsMono Nerd Font';
 }
 
 #custom-weather {
   margin-left: 8px;
-  font-family: 'JetBrainsMono Nerd Font';
-  font-size: 14px;
 }
 
 window#waybar {
   background-color: rgba(30, 30, 46, 0.3);
   color: #e5e9f0;
   border-radius: 10px;
-  font-size: 14px;
 }
 
 window#waybar > box {
   padding: 6px 10px;
 }
 
+#memory, #cpu {
+  font-family: 'JetBrainsMono Nerd Font';
+}
+
 #memory {
   margin-right: 10px;
+}
+
+#custom-network-info {
+  padding: 0 10px;
+  color: #ffffff;
+  font-family: 'JetBrainsMono Nerd Font';
+}
+
+#custom-network-info tooltip {
+  font-family: 'JetBrainsMono Nerd Font';
 }
