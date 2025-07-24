@@ -28,12 +28,15 @@ tooltip,
 #custom-temp,
 #cpu,
 #clock,
-#custom-weather {
+#custom-weather,
+#custom-performance,
+#custom-updates {
   background: #64bfec;
   color: #000;
 }
 
 #memory,
+#custom-updates,
 #clock {
   padding: 2px 5px 2px 5px;
   border-bottom-left-radius: 10px;
@@ -41,7 +44,8 @@ tooltip,
 }
 
 #cpu,
-#custom-weather {
+#custom-weather,
+#custom-performance {
   padding: 2px 5px 2px 5px;
   border-bottom-right-radius: 10px;
   border-top-right-radius: 10px;
@@ -50,9 +54,7 @@ tooltip,
 #custom-network-info,
 #custom-appmenu,
 #custom-volume,
-#custom-brightness,
-#custom-updates,
-#custom-performance {
+#custom-brightness {
   border-radius: 10px;
   padding: 2px 5px;
   background: #64bfec;
@@ -61,7 +63,6 @@ tooltip,
 
 #custom-volume,
 #custom-brightness,
-#custom-updates,
 #custom-network-info,
 #custom-appmenu {
   margin: 0 10px 0 0;
