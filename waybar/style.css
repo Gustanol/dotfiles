@@ -19,7 +19,8 @@ tooltip,
 #custom-appmenu,
 #custom-temp,
 #custom-brightness,
-#custom-updates {
+#custom-updates,
+#custom-permance {
   font-family: 'JetBrainsMono Nerd Font';
 }
 
@@ -50,7 +51,8 @@ tooltip,
 #custom-appmenu,
 #custom-volume,
 #custom-brightness,
-#custom-updates {
+#custom-updates,
+#custom-performance {
   border-radius: 10px;
   padding: 2px 5px;
   background: #64bfec;
