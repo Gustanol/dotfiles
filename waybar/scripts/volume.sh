@@ -15,4 +15,4 @@ else
     ICON="$ICON_HIGH"
 fi
 
-echo "{\"text\": \"$ICON $VOLUME%\", \"tooltip\": \"Volume: $VOLUME%\"}"
+echo "{\"text\": \"$ICON  $VOLUME%\", \"tooltip\": \"Volume: $VOLUME%\"}"

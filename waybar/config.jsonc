@@ -18,11 +18,12 @@
   "modules-right": [
     "custom/volume",
     "memory",
+    "custom/temp",
     "cpu"
   ],
 
   "custom/appmenu": {
-    "format": "\udb83\ude6f",
+    "format": "\udb83\ude6f Apps",
     "on-click": "wofi --show drun --show-icons --allow-images --conf ~/.config/wofi/config --style ~/.config/wofi/styles.css",
     "tooltip": true,
     "tooltip-format": "Apps"
@@ -44,7 +45,7 @@
   },
 
   "custom/network-info": {
-    "format": "{text}",
+    "format": "\udb85\ude16 {text}",
     "exec": "~/.config/waybar/scripts/network_info.sh",
     "interval": 10,
     "return-type": "json",
@@ -64,7 +65,7 @@
   },
 
   "memory": {
-    "format": "\uefc5 {used:0.1f}gb"
+    "format": "\uefc5 {used:0.1f}gb  \udb83\udfdf"
   },
 
   "custom/volume": {
@@ -75,5 +76,13 @@
     "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
     "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+",
     "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+  },
+
+  "custom/temp": {
+    "format": "\uf2cb {}  \udb83\udfdf",
+    "exec": "sensors | grep 'Package id 0' | awk '{print $4}' | cut -c 2- | sed 's/+//g'",
+    "interval": 5,
+    "tooltip": true,
+    "tooltip-format": "Current CPU temperature"
   }
 }

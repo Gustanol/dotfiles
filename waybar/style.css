@@ -10,27 +10,51 @@
 window#waybar {
   background-color: transparent;
   color: #e5e9f0;
-  border-radius: 10px;
+  padding: 6px 0;
 }
 
-window#waybar > box {
-  padding: 6px 10px;
-}
-
-tooltip, #memory, #cpu, #clock, #custom-weather, #custom-volume, #custom-network-info {
+tooltip,
+#memory,
+#cpu,
+#clock,
+#custom-weather,
+#custom-volume,
+#custom-network-info,
+#custom-appmenu,
+#custom-temp {
   font-family: 'JetBrainsMono Nerd Font';
 }
 
-#memory, #custom-temp {
-  margin-right: 10px;
+#memory, #custom-temp, #cpu {
+  background: #64bfec;
+  color: #000;
+}
+
+#cpu {
+  padding: 2px 5px 2px 5px;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+#memory {
+  padding: 2px 5px 2px 5px;
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+#custom-network-info,
+#custom-appmenu,
+#custom-volume {
+  border-radius: 10px;
+  padding: 2px 5px;
+  background: #64bfec;
+  color: #000;
 }
 
 #custom-network-info {
-  padding: 0 10px;
+  margin: 0 0 0 10px;
 }
 
 #custom-volume {
-  color: #ffffff;
-  padding: 0 10px;
-  font-size: 14px;
+  margin: 0 10px;
 }
