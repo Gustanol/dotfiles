@@ -31,17 +31,9 @@
 
   "clock": {
     "format": "{:%I:%M}   -",
-    "format-alt": "{\uf133 %d/%m/%y}",
-    "tooltip-format": "<span>{calendar}</span>",
-    "calendar": {
-      "default": "month",
-      "format": {
-        "months": "<span color='#ff6699'><b>{}</b></span>",
-        "days": "<span color='#cdd6f4'><b>{}</b></span>",
-        "weekdays": "<span color='#7CD37C'><b>{}</b></span>",
-        "today": "<span color='#ffcc66'><b>{}</b></span>"
-      }
-    }
+    "tooltip": true,
+    "tooltip-format": "{:%A, %B %d, %Y}",
+    "on-click": "gsimplecal"
   },
 
   "custom/network-info": {

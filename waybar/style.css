@@ -3,10 +3,6 @@
   font-size: 12px;
 }
 
-#custom-weather {
-  margin-left: 8px;
-}
-
 window#waybar {
   background-color: transparent;
   color: #e5e9f0;
@@ -25,21 +21,21 @@ tooltip,
   font-family: 'JetBrainsMono Nerd Font';
 }
 
-#memory, #custom-temp, #cpu {
+#memory, #custom-temp, #cpu, #clock, #custom-weather {
   background: #64bfec;
   color: #000;
 }
 
-#cpu {
-  padding: 2px 5px 2px 5px;
-  border-bottom-right-radius: 10px;
-  border-top-right-radius: 10px;
-}
-
-#memory {
+#memory, #clock {
   padding: 2px 5px 2px 5px;
   border-bottom-left-radius: 10px;
   border-top-left-radius: 10px;
+}
+
+#cpu, #custom-weather {
+  padding: 2px 5px 2px 5px;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 #custom-network-info,
