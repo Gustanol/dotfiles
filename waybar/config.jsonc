@@ -16,6 +16,7 @@
     "custom/weather"
   ],
   "modules-right": [
+    "custom/brightness",
     "custom/volume",
     "memory",
     "custom/temp",
@@ -76,5 +77,15 @@
     "interval": 5,
     "tooltip": true,
     "tooltip-format": "Current CPU temperature"
+  },
+
+  "custom/brightness": {
+    "format": "{}",
+    "exec": "~/.config/waybar/scripts/hypr_brightness.sh",
+    "interval": 2,
+    "on-click": "~/.config/waybar/scripts/hypr_brightness.sh +",
+    "on-click-right": "~/.config/waybar/scripts/hypr_brightness.sh -",
+    "on-scroll-up": "~/.config/waybar/scripts/hypr_brightness.sh +",
+    "on-scroll-down": "~/.config/waybar/scripts/hypr_brightness.sh -"
   }
 }

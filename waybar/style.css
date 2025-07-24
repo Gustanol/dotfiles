@@ -17,7 +17,8 @@ tooltip,
 #custom-volume,
 #custom-network-info,
 #custom-appmenu,
-#custom-temp {
+#custom-temp,
+#custom-brightness {
   font-family: 'JetBrainsMono Nerd Font';
 }
 
@@ -40,7 +41,8 @@ tooltip,
 
 #custom-network-info,
 #custom-appmenu,
-#custom-volume {
+#custom-volume,
+#custom-brightness {
   border-radius: 10px;
   padding: 2px 5px;
   background: #64bfec;
