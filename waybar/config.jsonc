@@ -9,7 +9,8 @@
   "gtk-layer-shell": true,
   "modules-left": [
     "custom/appmenu",
-    "custom/network-info"
+    "custom/network-info",
+    "custom/updates"
   ],
   "modules-center": [
     "clock",
@@ -44,7 +45,6 @@
     "return-type": "json",
     "tooltip": true
   },
-
 
   "custom/weather": {
     "format": "{}",
@@ -87,5 +87,14 @@
     "on-click-right": "~/.config/waybar/scripts/hypr_brightness.sh -",
     "on-scroll-up": "~/.config/waybar/scripts/hypr_brightness.sh +",
     "on-scroll-down": "~/.config/waybar/scripts/hypr_brightness.sh -"
+  },
+
+  "custom/updates": {
+    "format": "{text}",
+    "exec": "~/.config/waybar/scripts/updates.sh",
+    "interval": 1800,
+    "return-type": "json",
+    "tooltip": true,
+    "on-click": "foot -e sudo pacman -Syu && yay -Syu"
   }
 }

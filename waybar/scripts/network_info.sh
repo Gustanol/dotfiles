@@ -6,6 +6,8 @@ iface=$(ip route get 1.1.1.1 | awk '{print $5}' | head -n1)
 # Private IP
 ip=$(ip -4 addr show "$iface" | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 
+publicIp=$(curl -s ifconfig.me)
+
 # Subnetting mask
 cidr=$(ip -4 addr show "$iface" | grep -oP '(?<=inet\s)\d+(\.\d+){3}/\d+' | cut -d/ -f2)
 
@@ -20,7 +22,7 @@ else
 fi
 
 # JSON output
-tooltip="Network: $ssid\rInterface: $iface\rMask: /$cidr\rGateway: $gateway"
+tooltip="Network: $ssid\rInterface: $iface\rMask: /$cidr\rGateway: $gateway\rPublic IP: $publicIp"
 cat <<EOF
 {"text":"$ip","tooltip":"$tooltip"}
 EOF
