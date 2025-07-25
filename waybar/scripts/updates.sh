@@ -7,7 +7,7 @@ total=$((arch_updates + aur_updates))
 if [[ $total -gt 50 ]]; then 
     info=" 50+"
 elif [[ $total -gt 0 ]]; then
-    info=" $total"
+    info=" $total"
 else
     info=""
 fi

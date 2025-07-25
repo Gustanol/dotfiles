@@ -27,7 +27,7 @@
 
   "custom/appmenu": {
     "format": "\udb83\ude6f Apps",
-    "on-click": "wofi --show drun --show-icons --allow-images --conf ~/.config/wofi/config --style ~/.config/wofi/styles.css",
+    "on-click": "wofi --show drun",
     "tooltip": true,
     "tooltip-format": "Apps"
   },
