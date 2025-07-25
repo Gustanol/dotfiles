@@ -4,7 +4,6 @@
 
 DOTFILES_DIR=$(pwd)
 PACKAGES=(foot gsimplecal hyprland waybar mako mpv pipewire wofi)
-DELETE_REPO=$1
 SYMLINKS=$2
 
 # __ Functions __ #
@@ -47,11 +46,6 @@ copy_dotfiles() {
     for dir in hypr foot gsimplecal mako mpv pipewire waybar wofi; do
         cp -r "$DOTFILES_DIR/$dir" ~/.config/
     done
-
-    if [[ "$DELETE_REPO" == "y" ]]; then
-        log "[*] Removing dotfiles repo"
-        rm -rf "$DOTFILES_DIR"
-    fi
 }
 
 # __ Execution __ #
