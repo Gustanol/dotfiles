@@ -4,7 +4,8 @@
 
 DOTFILES_DIR=$(pwd)
 PACKAGES=(foot gsimplecal hyprland waybar mako mpv pipewire wofi)
-KEEP_REPO=$1
+DELETE_REPO=$1
+SYMLINKS=$2
 
 # __ Functions __ #
 
@@ -34,12 +35,12 @@ install_packages() {
     done
 }
 
-# create_symlinks() {
-#     log "[*] Creating symlinks"
-#     for dir in hypr foot gsimplecal mako mpv pipewire waybar wofi; do
-#         ln -sf "$DOTFILES_DIR/$dir" ~/.config/
-#     done
-# }
+create_symlinks() {
+    log "[*] Creating symlinks"
+    for dir in hypr foot gsimplecal mako mpv pipewire waybar wofi; do
+        ln -sf "$DOTFILES_DIR/$dir" ~/.config/
+    done
+}
 
 copy_dotfiles() {
     log "[*] Copying dotfiles"
@@ -47,7 +48,7 @@ copy_dotfiles() {
         cp -r "$DOTFILES_DIR/$dir" ~/.config/
     done
 
-    if [[ "$KEEP_REPO" != "y" ]]; then
+    if [[ "$DELETE_REPO" == "y" ]]; then
         log "[*] Removing dotfiles repo"
         rm -rf "$DOTFILES_DIR"
     fi
@@ -58,7 +59,11 @@ copy_dotfiles() {
 main() {
     require_sudo
     install_packages
-    copy_dotfiles
+    if [[ "$SYMLINKS" == "y" ]]; then
+         symlinks
+    else
+        copy_dotfiles
+    fi
     log "[✔] Dotfiles configurated successfully!"
 }
 
