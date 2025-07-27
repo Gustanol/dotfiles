@@ -10,8 +10,8 @@
   "modules-left": [
     "custom/appmenu",
     "custom/network-info",
-    "custom/updates",
-    "custom/performance"
+    "custom/net-speed",
+    "custom/updates"
   ],
   "modules-center": [
     "clock",
@@ -40,7 +40,7 @@
   },
 
   "custom/network-info": {
-    "format": "\udb85\ude16 {text}",
+    "format": "\udb85\ude16 {text}   \udb83\udfdf",
     "exec": "~/.config/waybar/scripts/network_info.sh",
     "interval": 10,
     "return-type": "json",
@@ -91,7 +91,7 @@
   },
 
   "custom/updates": {
-    "format": "{text}  \udb83\udfdf",
+    "format": "{text}",
     "exec": "~/.config/waybar/scripts/updates.sh",
     "interval": 1800,
     "return-type": "json",
@@ -99,13 +99,11 @@
     "on-click": "foot -e sudo pacman -Syu && yay -Syu"
   },
 
-  "custom/performance": {
+  "custom/net-speed": {
     "format": "{text}",
-    "exec": "~/.config/waybar/scripts/optimizer.sh",
+    "interval": 4,
+    "exec": "~/.config/waybar/scripts/net_speed.sh",
     "return-type": "json",
-    "tooltip": true,
-    "interval": 900,
-    "on-click": "~/.config/waybar/scripts/optimizer.sh",
-    "signal": 10
+    "tooltip": true
   }
 }

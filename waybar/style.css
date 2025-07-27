@@ -20,41 +20,42 @@ tooltip,
 #custom-temp,
 #custom-brightness,
 #custom-updates,
-#custom-permance {
+#custom-net-speed {
   font-family: 'JetBrainsMono Nerd Font';
 }
 
+#custom-network-info,
 #memory,
 #custom-temp,
 #cpu,
 #clock,
 #custom-weather,
-#custom-performance,
-#custom-updates {
+#custom-updates,
+#custom-net-speed {
   background: #64bfec;
   color: #000;
 }
 
+#custom-network-info,
 #memory,
-#custom-updates,
 #clock {
   padding: 2px 5px 2px 5px;
   border-bottom-left-radius: 10px;
   border-top-left-radius: 10px;
 }
 
+#custom-net-speed,
 #cpu,
-#custom-weather,
-#custom-performance {
+#custom-weather {
   padding: 2px 5px 2px 5px;
   border-bottom-right-radius: 10px;
   border-top-right-radius: 10px;
 }
 
-#custom-network-info,
 #custom-appmenu,
 #custom-volume,
-#custom-brightness {
+#custom-brightness,
+#custom-updates {
   border-radius: 10px;
   padding: 2px 5px;
   background: #64bfec;
@@ -63,7 +64,7 @@ tooltip,
 
 #custom-volume,
 #custom-brightness,
-#custom-network-info,
-#custom-appmenu {
+#custom-appmenu,
+#custom-net-speed {
   margin: 0 10px 0 0;
 }
