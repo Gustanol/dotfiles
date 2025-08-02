@@ -36,14 +36,14 @@ install_packages() {
 
 create_symlinks() {
     log "[*] Creating symlinks"
-    for dir in hypr foot gsimplecal mako mpv pipewire waybar wofi; do
+    for dir in hypr foot gsimplecal mako mpv pipewire waybar wofi qutebrowser; do
         ln -sf "$DOTFILES_DIR/$dir" ~/.config/
     done
 }
 
 copy_dotfiles() {
     log "[*] Copying dotfiles"
-    for dir in hypr foot gsimplecal mako mpv pipewire waybar wofi; do
+    for dir in hypr foot gsimplecal mako mpv pipewire waybar wofi qutebrowser; do
         cp -r "$DOTFILES_DIR/$dir" ~/.config/
     done
 }
