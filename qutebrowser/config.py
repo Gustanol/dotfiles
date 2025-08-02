@@ -41,8 +41,17 @@ config.bind('<Up>',   "jseval document.querySelector('video').playbackRate += 0.
 config.bind('<Down>', "jseval document.querySelector('video').playbackRate -= 0.25;")
 config.bind('cm',     'clear-messages')
 
+config.set(
+    'content.headers.user_agent',
+    'Mozilla/5.0 (X11; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0',
+    'https://accounts.google.com/*'
+)
+
+c.backend = 'webengine'
+c.content.javascript.enabled = True
+c.content.cookies.accept = 'all'
+c.content.cookies.store = True
+
 c.auto_save.session = False
 c.tabs.last_close = 'default-page'
 c.url.start_pages = ['https://duckduckgo.com/?q=']
-
-c.content.cookies.store = True
