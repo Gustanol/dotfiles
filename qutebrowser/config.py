@@ -31,10 +31,9 @@ config.bind('gt', 'set-cmd-text -s :tab-select ')
 c.editor.command = ['emacsclient', '--no-wait', '+{line}:{column}:{file}']
 c.qt.chromium.low_end_device_mode = 'always'
 c.qt.args = [
-    'ignore-gpu-blocklist',
-    'enable-gpu-rasterization',
-    'enable-accelerated-video-decode',
-    'num-raster-threads=4'
+    "ignore-gpu-blocklist",
+    "enable-gpu-rasterization"
+    # "enable-zero-copy"
 ]
 
 config.bind('<Up>',   "jseval document.querySelector('video').playbackRate += 0.25;")
@@ -51,6 +50,13 @@ c.backend = 'webengine'
 c.content.javascript.enabled = True
 c.content.cookies.accept = 'all'
 c.content.cookies.store = True
+c.content.blocking.enabled = True
+c.content.blocking.method = 'both'
+c.content.blocking.adblock.lists = [
+    'https://easylist.to/easylist/easylist.txt',
+    'https://easylist.to/easylist/easyprivacy.txt',
+    'https://secure.fanboy.co.nz/fanboy-annoyance.txt'
+]
 
 c.auto_save.session = False
 c.tabs.last_close = 'default-page'
