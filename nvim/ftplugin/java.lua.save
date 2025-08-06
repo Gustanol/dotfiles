@@ -1,0 +1,160 @@
+-- ~/.config/nvim/ftplugin/java.lua
+-- Configuração JDTLS super simples, independente de qualquer framework
+
+local jdtls = require("jdtls")
+
+-- Função para detectar raiz do projeto Java
+local function get_project_root()
+    local markers = { "pom.xml", "build.gradle", "build.gradle.kts" }
+    local current_dir = vim.fn.expand("%:p:h")
+
+    for _, marker in ipairs(markers) do
+        local found = vim.fn.findfile(marker, current_dir .. ";")
+        if found ~= "" then
+            return vim.fn.fnamemodify(found, ":p:h")
+        end
+    end
+
+    -- Fallback para diretório atual
+    return vim.fn.getcwd()
+end
+
+-- Detectar raiz do projeto
+local project_root = get_project_root()
+local project_name = vim.fn.fnamemodify(project_root, ":t")
+local workspace_dir = vim.fn.stdpath("data") .. "/jdtls-workspace/" .. project_name
+
+-- Verificar se JDTLS está instalado
+local jdtls_jar = vim.fn.glob("~/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar")
+if jdtls_jar == "" then
+    print("❌ JDTLS não encontrado! Execute :MasonInstall jdtls")
+    return
+end
+
+-- Configuração mínima mas funcional
+local config = {
+    cmd = {
+        "/usr/lib/jvm/java-21-openjdk/bin/java",
+        "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+        "-Dosgi.bundles.defaultStartLevel=4",
+        "-Declipse.product=org.eclipse.jdt.ls.core.product",
+        "-Dlog.protocol=true",
+        "-Dlog.level=ALL",
+        "-Xms1g",
+        "-Xmx2g",
+        "--add-modules=ALL-SYSTEM",
+        "--add-opens",
+        "java.base/java.util=ALL-UNNAMED",
+        "--add-opens",
+        "java.base/java.lang=ALL-UNNAMED",
+        "-jar",
+        jdtls_jar,
+        "-configuration",
+        "~/.local/share/nvim/mason/packages/jdtls/config_linux",
+        "-data",
+        workspace_dir,
+    },
+
+    root_dir = project_root,
+
+    settings = {
+        java = {
+            eclipse = {
+                downloadSources = true,
+            },
+            configuration = {
+                updateBuildConfiguration = "interactive",
+                runtimes = {
+                    {
+                        name = "JavaSE-21",
+                        path = "/usr/lib/jvm/java-21-openjdk/",
+                        default = true,
+                    },
+                },
+            },
+            maven = {
+                downloadSources = true,
+c            },
+            implementationsCodeLens = {
+                enabled = true,
+            },
+            referencesCodeLens = {
+                enabled = true,
+            },
+            references = {
+                includeDecompiledSources = true,
+            },
+            format = {
+                enabled = true,
+            },
+            signatureHelp = {
+                enabled = true,
+            },
+            completion = {
+                favoriteStaticMembers = {
+                    "org.springframework.boot.SpringApplication.*",
+                    "org.springframework.web.bind.annotation.*",
+                    "org.springframework.stereotype.*",
+                    "org.springframework.boot.autoconfigure.*",
+                    "org.junit.jupiter.api.Assertions.*",
+                    "org.mockito.Mockito.*",
+                    "java.util.Objects.requireNonNull",
+                    "java.util.Objects.requireNonNullElse",
+                },
+            },
+            contentProvider = {
+                preferred = "fernflower",
+            },
+            sources = {
+                organizeImports = {
+                    starThreshold = 9999,
+                    staticStarThreshold = 9999,
+                },
+            },
+            codeGeneration = {
+                toString = {
+                    template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
+                },
+                useBlocks = true,
+            },
+        },
+        signatureHelp = {
+            enabled = true,
+        },
+        extendedClientCapabilities = jdtls.extendedClientCapabilities,
+    },
+
+    init_options = {
+        bundles = {
+            -- Adicionar Spring Boot Tools se estiver disponível
+            vim.fn.glob("~/.local/share/nvim/mason/packages/spring-boot-tools/extension/jars/*.jar", true),
+        },
+    },
+}
+
+-- Iniciar JDTLS
+jdtls.start_or_attach(config)
+
+-- Log de sucesso
+print("🚀 JDTLS iniciado - Projeto: " .. project_name .. " | Root: " .. project_root)
+
+-- Keymaps específicos para Java (opcional)
+local opts = { noremap = true, silent = true, buffer = true }
+vim.keymap.set(
+    "n",
+    "<leader>jo",
+    '<cmd>lua require("jdtls").organize_imports()<cr>',
+    vim.tbl_extend("force", opts, { desc = "Organize Imports" })
+)
+vim.keymap.set(
+    "n",
+    "<leader>jv",
+    '<cmd>lua require("jdtls").extract_variable()<cr>',
+    vim.tbl_extend("force", opts, { desc = "Extract Variable" })
+)
+vim.keymap.set(
+    "v",
+    "<leader>jm",
+    '<cmd>lua require("jdtls").extract_method(true)<cr>',
+    vim.tbl_extend("force", opts, { desc = "Extract Method" })
+)

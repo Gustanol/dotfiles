@@ -3,23 +3,27 @@ config.load_autoconfig(False)
 
 c.backend = 'webengine'
 c.qt.chromium.low_end_device_mode = 'always'
+c.qt.chromium.process_model = "process-per-site-instance"
+c.qt.chromium.sandboxing = "enable-all"
 
 c.qt.args = [
-    'ignore-gpu-blocklist',
-    'enable-gpu-rasterization',
-    'enable-accelerated-video-decode',
-    'enable-zero-copy',
-    'enable-features=VaapiVideoDecoder',
-    'disable-features=UseChromeOSDirectVideoDecoder',
-    # 'enable-features=VaapiVideoDecodeLinuxGL'
+    '--enable-gpu-rasterization',
+    '--enable-zero-copy',
+    '--disable-background-timer-throttling',
+    '--disable-features=TranslateUI'
 ]
 
+c.content.autoplay = False
 c.content.canvas_reading = False
 c.content.webgl = False
 c.content.plugins = False
 c.content.persistent_storage = 'ask'
 c.content.dns_prefetch = False
 c.content.prefers_reduced_motion = True
+
+c.statusbar.show = 'never'
+c.tabs.favicons.show = 'always'
+c.tabs.title.format = ""
 
 # c.qt.workarounds.remove_service_workers = True
 

@@ -1,38 +1,39 @@
--- ~/.config/nvim/lua/microservices.lua
 local M = {}
 
-function M.find_microservices()
-    local services = {}
-    local handle = io.popen('find . -name "pom.xml" -o -name "build.gradle" | head -20')
+function M.detect_microservice()
+    local current_dir = vim.fn.expand("%:p:h")
+    local markers = { "pom.xml", "build.gradle", "src/main/java" }
 
-    if handle then
-        for line in handle:lines() do
-            local dir = vim.fn.fnamemodify(line, ":h")
-            if dir ~= "." then
-                table.insert(services, dir)
+    for i = 0, 3 do
+        local check_dir = current_dir
+        for j = 1, i do
+            check_dir = vim.fn.fnamemodify(check_dir, ":h")
+        end
+
+        for _, marker in ipairs(markers) do
+            if
+                vim.fn.filereadable(check_dir .. "/" .. marker) == 1
+                or vim.fn.isdirectory(check_dir .. "/" .. marker) == 1
+            then
+                return check_dir
             end
         end
-        handle:close()
     end
 
-    return services
+    return nil
 end
 
-function M.switch_service()
-    local services = M.find_microservices()
-
-    vim.ui.select(services, {
-        prompt = "Selecione o microsserviço:",
-        format_item = function(item)
-            return vim.fn.fnamemodify(item, ":t")
+function M.setup()
+    vim.api.nvim_create_autocmd("FileType", {
+        pattern = "java",
+        callback = function()
+            local project_root = M.detect_microservice()
+            if project_root then
+                vim.b.jdtls_project_root = project_root
+                print("Detected microservice project at: " .. project_root)
+            end
         end,
-    }, function(choice)
-        if choice then
-            vim.cmd("cd " .. choice)
-            vim.cmd("LspRestart")
-            print("Trocado para: " .. choice)
-        end
-    end)
+    })
 end
 
 return M
