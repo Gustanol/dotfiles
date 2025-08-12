@@ -9,8 +9,55 @@ vim.api.nvim_create_autocmd("VimLeave", {
     end,
 })
 
+vim.g.c_syntax_for_h = 1
+vim.g.c_no_curly_error = 1
+
 --vim.g.vim_markdown_edit_url_in = "current"
 --vim.wo.foldmethod = "expr"
 --vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
 --vim.wo.foldlevel = 0
 --vim.wo.foldenable = true
+
+local java_generator = require("java-generator")
+
+vim.api.nvim_create_user_command("JavaCreate", function()
+    java_generator.create_java_interactive()
+end, { desc = "Criar arquivo Java interativamente" })
+
+local java_types = {
+    "class",
+    "interface",
+    "enum",
+    "record",
+    "controller",
+    "service",
+    "repository",
+    "entity",
+    "dto",
+    "test",
+}
+
+for _, type in ipairs(java_types) do
+    vim.api.nvim_create_user_command("Java" .. type:gsub("^%l", string.upper), function(opts)
+        local args = vim.split(opts.args, " ", { trimempty = true })
+        local file_name = args[1]
+        local custom_package = args[2]
+
+        if not file_name then
+            print("Usage: Java" .. type:gsub("^%l", string.upper) .. " <FileName> [package]")
+            return
+        end
+
+        java_generator.create_java_file(type, file_name, custom_package)
+    end, {
+        nargs = "*",
+        desc = "Criar " .. type .. " Java",
+    })
+end
+
+vim.keymap.set("n", "<leader>jc", ":JavaCreate<CR>", { desc = "Criar arquivo Java" })
+vim.keymap.set("n", "<leader>jC", ":JavaClass ", { desc = "Criar classe Java" })
+vim.keymap.set("n", "<leader>ji", ":JavaInterface ", { desc = "Criar interface Java" })
+vim.keymap.set("n", "<leader>js", ":JavaService ", { desc = "Criar service Java" })
+vim.keymap.set("n", "<leader>jr", ":JavaRepository ", { desc = "Criar repository Java" })
+vim.keymap.set("n", "<leader>je", ":JavaEntity ", { desc = "Criar entity Java" })

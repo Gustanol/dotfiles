@@ -21,7 +21,8 @@ c.content.persistent_storage = 'ask'
 c.content.dns_prefetch = False
 c.content.prefers_reduced_motion = True
 
-c.statusbar.show = 'never'
+c.statusbar.show = 'in-mode'
+c.tabs.show = 'multiple'
 c.tabs.favicons.show = 'always'
 c.tabs.title.format = ""
 
@@ -30,6 +31,8 @@ c.tabs.title.format = ""
 c.completion.web_history.max_items = 2500
 c.completion.cmd_history_max_items = 1000
 c.session.lazy_restore = False
+c.downloads.location.prompt = False
+c.content.headers.accept_language = 'en-US'
 
 c.content.blocking.enabled = True
 c.content.blocking.method = 'hosts'
@@ -47,6 +50,10 @@ c.colors.webpage.darkmode.threshold.background = 200
 c.colors.webpage.darkmode.policy.images = 'smart'
 c.colors.webpage.darkmode.policy.page = 'smart'
 # config.set('colors.webpage.darkmode.enabled', True, 'https://*.github.com/*')
+c.colors.tabs.bar.bg = '#00000000'
+c.colors.tabs.even.bg = '#00000000'
+c.colors.tabs.odd.bg = '#00000000'
+# c.colors.webpage.bg = '#ffffff'
 
 config.bind('f', 'hint links')
 config.bind('o', 'open {url}')

@@ -57,9 +57,6 @@ local config = {
                     template = "${object.className}{${member.name}=${member.value}, ${otherMembers}}",
                 },
             },
-            completion = {
-                maxResults = 20,
-            },
             configuration = {
                 updateBuildConfiguration = "interactive",
                 runtimes = {
@@ -68,6 +65,23 @@ local config = {
                         path = "/usr/lib/jvm/java-21-openjdk/",
                         default = true,
                     },
+                },
+            },
+            compile = {
+                nullAnalysis = {
+                    mode = "automatic",
+                },
+            },
+            signatureHelp = { enabled = true },
+            completion = {
+                maxResults = 20,
+                favoriteStaticMembers = {
+                    "org.hamcrest.MatcherAssert.assertThat",
+                    "org.hamcrest.Matchers.*",
+                    "org.hamcrest.CoreMatchers.*",
+                    "org.junit.jupiter.api.Assertions.*",
+                    "java.util.Objects.requireNonNull",
+                    "java.util.Objects.requireNonNullElse",
                 },
             },
             maven = {

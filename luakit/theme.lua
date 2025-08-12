@@ -1,0 +1,18 @@
+return {
+	font = "11px monospace",
+	background = "#181818",
+	foreground = "#e0e0e0",
+	accent = "#4f97ff",
+	sbar_bg = "#181818",
+	sbar_fg = "#e0e0e0",
+	hover_bg = "#282828",
+	hover_fg = "#ffffff",
+	input_bg = "#282828",
+	input_fg = "#e0e0e0",
+	tab_active_bg = "#181818",
+	tab_active_fg = "#e0e0e0",
+	tab_inactive_bg = "#282828",
+	tab_inactive_fg = "#888888",
+	link_fg = "#4f97ff",
+	uri_fg = "#4f97ff",
+}
