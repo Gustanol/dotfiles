@@ -61,3 +61,35 @@ vim.keymap.set("n", "<leader>ji", ":JavaInterface ", { desc = "Criar interface J
 vim.keymap.set("n", "<leader>js", ":JavaService ", { desc = "Criar service Java" })
 vim.keymap.set("n", "<leader>jr", ":JavaRepository ", { desc = "Criar repository Java" })
 vim.keymap.set("n", "<leader>je", ":JavaEntity ", { desc = "Criar entity Java" })
+
+require("c-commands").setup()
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "c",
+    callback = function()
+        vim.opt_local.colorcolumn = "100"
+        vim.opt_local.textwidth = 100
+
+        vim.cmd([[
+      highlight Todo guifg=#FF6C6B guibg=#1E1E1E gui=bold
+      highlight Fixme guifg=#FF6C6B guibg=#1E1E1E gui=bold
+      match Todo /\(TODO\|FIXME\|XXX\|HACK\|NOTE\)/
+    ]])
+    end,
+})
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*.c,*.h",
+    callback = function()
+        if vim.g.auto_format_c then
+            vim.lsp.buf.format({ async = false })
+        end
+    end,
+})
+
+vim.api.nvim_create_autocmd("QuickFixCmdPost", {
+    pattern = "make",
+    callback = function()
+        vim.cmd("cwindow")
+    end,
+})
