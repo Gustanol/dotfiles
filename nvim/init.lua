@@ -18,6 +18,8 @@ vim.g.c_no_curly_error = 1
 --vim.wo.foldlevel = 0
 --vim.wo.foldenable = true
 
+vim.g.netrw_hide = 0
+
 local java_generator = require("java-generator")
 
 vim.api.nvim_create_user_command("JavaCreate", function()

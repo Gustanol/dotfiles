@@ -1,4 +1,3 @@
--- ~/.config/nvim/lua/commands.lua
 vim.api.nvim_create_user_command("JavaSwitchWorkspace", function()
     local current_dir = vim.fn.getcwd()
     vim.cmd("LspStop")
@@ -16,3 +15,25 @@ vim.api.nvim_create_user_command("JavaWorkspaceInfo", function()
         print("JDTLS não está ativo")
     end
 end, {})
+
+vim.keymap.set("n", "<leader>tt", function()
+    local flavours = { "latte", "frappe", "macchiato", "mocha" }
+    local current = vim.g.catppuccin_flavour or "mocha"
+    local current_index = 1
+
+    for i, flavour in ipairs(flavours) do
+        if flavour == current then
+            current_index = i
+            break
+        end
+    end
+
+    local next_index = (current_index % #flavours) + 1
+    local next_flavour = flavours[next_index]
+
+    require("catppuccin").setup({ flavour = next_flavour })
+    vim.cmd.colorscheme("catppuccin")
+    vim.g.catppuccin_flavour = next_flavour
+
+    print("Catppuccin theme changed to: " .. next_flavour)
+end, { desc = "Toggle Catppuccin flavour" })
