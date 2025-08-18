@@ -5,7 +5,7 @@
 
 window#waybar {
   background-color: transparent;
-  color: #e5e9f0;
+  color: #cdd6f4;
   padding: 6px 0;
 }
 
@@ -32,14 +32,14 @@ tooltip,
 #custom-weather,
 #custom-updates,
 #custom-net-speed {
-  background: #64bfec;
-  color: #000;
+  background: #89b4fa;
+  color: #1e1e2e;
 }
 
 #custom-network-info,
 #memory,
 #clock {
-  padding: 2px 5px 2px 5px;
+  padding: 2px 5px;
   border-bottom-left-radius: 10px;
   border-top-left-radius: 10px;
 }
@@ -47,7 +47,7 @@ tooltip,
 #custom-net-speed,
 #cpu,
 #custom-weather {
-  padding: 2px 5px 2px 5px;
+  padding: 2px 5px;
   border-bottom-right-radius: 10px;
   border-top-right-radius: 10px;
 }
@@ -58,8 +58,8 @@ tooltip,
 #custom-updates {
   border-radius: 10px;
   padding: 2px 5px;
-  background: #64bfec;
-  color: #000;
+  background: #89b4fa;
+  color: #1e1e2e;
 }
 
 #custom-volume,
