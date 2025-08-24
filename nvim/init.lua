@@ -11,7 +11,9 @@ vim.api.nvim_create_autocmd("VimLeave", {
 
 vim.g.c_syntax_for_h = 1
 vim.g.c_no_curly_error = 1
-
+vim.opt.directory = vim.fn.expand("~/.config/nvim/swap//")
+vim.opt.swapfile = true
+vim.opt.updatetime = 300
 --vim.g.vim_markdown_edit_url_in = "current"
 --vim.wo.foldmethod = "expr"
 --vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
