@@ -46,16 +46,12 @@ vim.keymap.set("n", "<S-l>", ":bnext<CR>", { desc = "Next buffer", silent = true
 vim.keymap.set("n", "<leader>bd", ":bdelete<CR>", { desc = "Delete buffer", silent = true })
 vim.keymap.set("n", "<leader>bD", ":bdelete!<CR>", { desc = "Force delete buffer", silent = true })
 
--- Fechar todos os buffers exceto o atual
 vim.keymap.set("n", "<leader>bo", ':%bdelete|edit #|normal `"<CR>', { desc = "Delete other buffers", silent = true })
 
--- Fechar todos os buffers
 vim.keymap.set("n", "<leader>ba", ":bufdo bdelete<CR>", { desc = "Delete all buffers", silent = true })
 
--- Ir para buffer específico (por número)
 for i = 1, 9 do
     vim.keymap.set("n", "<leader>" .. i, ":buffer " .. i .. "<CR>", { desc = "Go to buffer " .. i, silent = true })
 end
 
--- Buffer alternativo (último usado)
 vim.keymap.set("n", "<leader>`", ":buffer#<CR>", { desc = "Alternate buffer", silent = true })

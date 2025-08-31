@@ -1,26 +1,19 @@
--- lua/c-commands.lua
--- Comandos personalizados para desenvolvimento em C
-
 local M = {}
 
--- Função para criar um novo projeto C com estrutura básica
 function M.create_c_project(project_name)
     project_name = project_name or vim.fn.input("Project name: ")
     if project_name == "" then
         return
     end
 
-    -- Criar diretório do projeto
     vim.fn.mkdir(project_name, "p")
     vim.cmd("cd " .. project_name)
 
-    -- Criar estrutura de diretórios
     vim.fn.mkdir("src", "p")
     vim.fn.mkdir("include", "p")
     vim.fn.mkdir("build", "p")
     vim.fn.mkdir("tests", "p")
 
-    -- Criar Makefile básico
     local makefile_content = {
         "CC = gcc",
         "CFLAGS = -Wall -Wextra -std=c11 -g -I$(INCDIR)",
@@ -56,7 +49,6 @@ function M.create_c_project(project_name)
 
     vim.fn.writefile(makefile_content, "Makefile")
 
-    -- Criar compile_flags.txt para clangd
     local compile_flags = {
         "-std=c11",
         "-Wall",
@@ -68,7 +60,6 @@ function M.create_c_project(project_name)
     }
     vim.fn.writefile(compile_flags, "compile_flags.txt")
 
-    -- Criar .clangd config
     local clangd_config = {
         "CompileFlags:",
         "  Add:",
@@ -91,21 +82,14 @@ function M.create_c_project(project_name)
     }
     vim.fn.writefile(clangd_config, ".clangd")
 
-    -- Criar main.c básico
     local main_content = {
-        "#include <stdio.h>",
-        "#include <stdlib.h>",
-        "#include <stdint.h>  /* Para uint32_t, etc. */",
-        "",
         "int main(int argc, char *argv[]) {",
-        '    printf("Hello, World!\\n");',
         "    return 0;",
         "}",
     }
 
     vim.fn.writefile(main_content, "src/main.c")
 
-    -- Criar .gitignore
     local gitignore_content = {
         "build/",
         "*.o",
@@ -118,15 +102,12 @@ function M.create_c_project(project_name)
 
     vim.fn.writefile(gitignore_content, ".gitignore")
 
-    -- Abrir o arquivo main.c
     vim.cmd("edit src/main.c")
 
     print("C project '" .. project_name .. "' created successfully with clangd configuration!")
 end
 
--- Função para configurar clangd em projeto existente
 function M.setup_clangd_for_c()
-    -- Criar compile_flags.txt se não existir
     if vim.fn.filereadable("compile_flags.txt") == 0 then
         local compile_flags = {
             "-std=c11",
@@ -142,7 +123,6 @@ function M.setup_clangd_for_c()
         print("Created compile_flags.txt")
     end
 
-    -- Criar .clangd config se não existir
     if vim.fn.filereadable(".clangd") == 0 then
         local clangd_config = {
             "CompileFlags:",
@@ -170,7 +150,6 @@ function M.setup_clangd_for_c()
         print("Created .clangd config")
     end
 
-    -- Reiniciar LSP
     vim.cmd("LspRestart")
     print("Clangd configured for C. LSP restarted.")
 end
@@ -187,13 +166,11 @@ function M.generate_compile_commands()
     end
 end
 
--- Função para verificar sintaxe sem compilar
 function M.syntax_check()
     local filename = vim.fn.expand("%")
     vim.cmd("!gcc -fsyntax-only -Wall -Wextra -std=c11 " .. filename)
 end
 
--- Função para formatar código com clang-format
 function M.format_code()
     if vim.fn.executable("clang-format") == 1 then
         vim.cmd("!clang-format -i --style='{BasedOnStyle: llvm, IndentWidth: 4, ColumnLimit: 100}' %")
@@ -204,23 +181,19 @@ function M.format_code()
     end
 end
 
--- Função para executar análise estática
 function M.static_analysis()
     local filename = vim.fn.expand("%")
 
-    -- Usar clang-tidy se disponível (via clangd)
     if vim.fn.executable("clang-tidy") == 1 then
         vim.cmd("!clang-tidy " .. filename .. " -- -std=c11")
     elseif vim.fn.executable("cppcheck") == 1 then
         vim.cmd("!cppcheck --enable=all --std=c11 " .. filename)
     else
-        -- Usar análise do clangd (built-in)
         vim.lsp.buf.code_action()
         print("Static analysis via clang-tidy or cppcheck not available. Using LSP code actions.")
     end
 end
 
--- Função para criar header guard automaticamente
 function M.create_header_guard()
     local filename = vim.fn.expand("%:t:r"):upper() .. "_H"
     local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
@@ -232,10 +205,8 @@ function M.create_header_guard()
             "",
         }
 
-        -- Inserir no início
         vim.api.nvim_buf_set_lines(0, 0, 0, false, guard_lines)
 
-        -- Adicionar no final
         vim.api.nvim_buf_set_lines(0, -1, -1, false, {
             "",
             "#endif /* " .. filename .. " */",
@@ -245,7 +216,6 @@ function M.create_header_guard()
     end
 end
 
--- Registrar comandos
 local function setup_commands()
     vim.api.nvim_create_user_command("CCreateProject", function(opts)
         M.create_c_project(opts.args)
@@ -276,7 +246,6 @@ local function setup_commands()
     )
 end
 
--- Configurar keymaps globais para C
 local function setup_keymaps()
     local keymap = vim.keymap.set
 
@@ -287,7 +256,6 @@ local function setup_keymaps()
     keymap("n", "<leader>ca", "<cmd>CAnalyze<cr>", { desc = "Analyze C code" })
 end
 
--- Função de inicialização
 function M.setup()
     setup_commands()
     setup_keymaps()
