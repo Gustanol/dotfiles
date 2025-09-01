@@ -38,11 +38,9 @@ vim.keymap.set("n", "<leader>tt", function()
     print("Catppuccin theme changed to: " .. next_flavour)
 end, { desc = "Toggle Catppuccin flavour" })
 
--- Navegação entre buffers
 vim.keymap.set("n", "<S-h>", ":bprevious<CR>", { desc = "Previous buffer", silent = true })
 vim.keymap.set("n", "<S-l>", ":bnext<CR>", { desc = "Next buffer", silent = true })
 
--- Fechar buffers
 vim.keymap.set("n", "<leader>bd", ":bdelete<CR>", { desc = "Delete buffer", silent = true })
 vim.keymap.set("n", "<leader>bD", ":bdelete!<CR>", { desc = "Force delete buffer", silent = true })
 

@@ -375,7 +375,7 @@ class %s {
 
 function M.create_java_file(file_type, file_name, custom_package)
     if not templates[file_type] then
-        print("Tipo inválido! Tipos disponíveis: " .. table.concat(vim.tbl_keys(templates), ", "))
+        print("Invalid type! Available types: " .. table.concat(vim.tbl_keys(templates), ", "))
         return
     end
 
@@ -392,9 +392,9 @@ function M.create_java_file(file_type, file_name, custom_package)
 
         vim.cmd("edit " .. file_path)
 
-        print(string.format("✅ Arquivo %s criado com sucesso! Pacote: %s", file_path, package))
+        print(string.format("✅ File %s created successfuly! Package: %s", file_path, package))
     else
-        print("❌ Erro ao criar o arquivo!")
+        print("❌ Error creating file!")
     end
 end
 
@@ -403,7 +403,7 @@ function M.create_java_interactive()
     table.sort(types)
 
     vim.ui.select(types, {
-        prompt = "Selecione o tipo de arquivo Java:",
+        prompt = "Select Java file type:",
         format_item = function(item)
             return item:upper()
                 .. " - "
@@ -420,7 +420,7 @@ function M.create_java_interactive()
         end
 
         vim.ui.input({
-            prompt = string.format("Nome da %s: ", selected_type),
+            prompt = string.format("%s name: ", selected_type),
             default = "",
         }, function(file_name)
             if not file_name or file_name == "" then
@@ -428,7 +428,7 @@ function M.create_java_interactive()
             end
 
             vim.ui.input({
-                prompt = "Pacote (deixe vazio para auto-detectar): ",
+                prompt = "Package (keep empty to auto-detect): ",
                 default = detect_package(),
             }, function(custom_package)
                 if custom_package == "" then

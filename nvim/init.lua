@@ -1,6 +1,7 @@
 -- bootstrap lazy.nvim, LazyVim and your plugins
 require("config.lazy")
 require("spring-boot-commands").setup()
+require("c-commands").setup()
 require("microservices").setup()
 
 vim.api.nvim_create_autocmd("VimLeave", {
@@ -26,7 +27,7 @@ local java_generator = require("java-generator")
 
 vim.api.nvim_create_user_command("JavaCreate", function()
     java_generator.create_java_interactive()
-end, { desc = "Criar arquivo Java interativamente" })
+end, { desc = "Create Java file" })
 
 local java_types = {
     "class",
@@ -59,14 +60,12 @@ for _, type in ipairs(java_types) do
     })
 end
 
-vim.keymap.set("n", "<leader>jc", ":JavaCreate<CR>", { desc = "Criar arquivo Java" })
-vim.keymap.set("n", "<leader>jC", ":JavaClass ", { desc = "Criar classe Java" })
-vim.keymap.set("n", "<leader>ji", ":JavaInterface ", { desc = "Criar interface Java" })
-vim.keymap.set("n", "<leader>js", ":JavaService ", { desc = "Criar service Java" })
-vim.keymap.set("n", "<leader>jr", ":JavaRepository ", { desc = "Criar repository Java" })
-vim.keymap.set("n", "<leader>je", ":JavaEntity ", { desc = "Criar entity Java" })
-
-require("c-commands").setup()
+vim.keymap.set("n", "<leader>jc", ":JavaCreate<CR>", { desc = "Create Java file" })
+vim.keymap.set("n", "<leader>jC", ":JavaClass ", { desc = "Create Java class" })
+vim.keymap.set("n", "<leader>ji", ":JavaInterface ", { desc = "Create Java interface" })
+vim.keymap.set("n", "<leader>js", ":JavaService ", { desc = "Create Java service" })
+vim.keymap.set("n", "<leader>jr", ":JavaRepository ", { desc = "Create Java repository" })
+vim.keymap.set("n", "<leader>je", ":JavaEntity ", { desc = "Create Java entity" })
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "c",

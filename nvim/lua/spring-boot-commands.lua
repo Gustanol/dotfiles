@@ -43,7 +43,7 @@ function M.switch_spring_service()
     end
 
     vim.ui.select(services, {
-        prompt = "Selecione o microsserviço Spring Boot:",
+        prompt = "Select the Spring microservice:",
         format_item = function(item)
             local service_name = vim.fn.fnamemodify(item, ":t")
             local pom_file = item .. "/pom.xml"
@@ -77,7 +77,7 @@ function M.run_spring_boot_app()
     elseif vim.fn.filereadable(current_dir .. "/build.gradle") == 1 then
         vim.cmd("terminal ./gradlew bootRun")
     else
-        print("❌ Não é um projeto Spring Boot válido!")
+        print("❌ Invalid Spring project!")
     end
 end
 
@@ -90,7 +90,7 @@ function M.run_spring_tests()
     elseif vim.fn.filereadable(current_dir .. "/build.gradle") == 1 then
         vim.cmd("terminal ./gradlew test")
     else
-        print("❌ Projeto não suportado!")
+        print("❌ Not supported project!")
     end
 end
 
@@ -105,12 +105,12 @@ function M.create_spring_structure()
     }
 
     vim.ui.select(vim.tbl_keys(templates), {
-        prompt = "Criar estrutura:",
+        prompt = "Create structure:",
     }, function(choice)
         if choice then
             local path = templates[choice]
             vim.fn.mkdir(path, "p")
-            print("📁 Criado: " .. path)
+            print("📁 Created: " .. path)
         end
     end)
 end
@@ -125,7 +125,7 @@ function M.open_spring_file()
     }
 
     vim.ui.select(vim.tbl_keys(files), {
-        prompt = "Abrir arquivo Spring Boot:",
+        prompt = "Open Spring file:",
     }, function(choice)
         if choice then
             local pattern = files[choice]
@@ -134,7 +134,7 @@ function M.open_spring_file()
             if #found_files > 0 then
                 vim.cmd("edit " .. found_files[1])
             else
-                print("❌ Arquivo não encontrado: " .. pattern)
+                print("❌ Not found file: " .. pattern)
             end
         end
     end)
@@ -144,16 +144,16 @@ function M.show_project_info()
     local current_dir = vim.fn.getcwd()
     local project_name = vim.fn.fnamemodify(current_dir, ":t")
 
-    print("📋 Informações do Projeto Spring Boot:")
-    print("  Nome: " .. project_name)
-    print("  Diretório: " .. current_dir)
+    print("📋 Spring project info:")
+    print("  Name: " .. project_name)
+    print("  Directory: " .. current_dir)
 
     if vim.fn.filereadable("pom.xml") == 1 then
         print("  Build: Maven")
         local pom_content = table.concat(vim.fn.readfile("pom.xml"), "\n")
         local spring_version = string.match(pom_content, "<spring%-boot%.version>(.-)</spring%-boot%.version>")
         if spring_version then
-            print("  Spring Boot: " .. spring_version)
+            print("  Spring: " .. spring_version)
         end
     elseif vim.fn.filereadable("build.gradle") == 1 then
         print("  Build: Gradle")
