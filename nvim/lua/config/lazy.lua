@@ -19,6 +19,15 @@ require("lazy").setup({
         -- add LazyVim and import its plugins
         { "LazyVim/LazyVim", opts = { colorscheme = "catppuccin" }, import = "lazyvim.plugins" },
 
+        { import = "lazyvim.plugins.extras.lang.java" },
+        { import = "lazyvim.plugins.extras.test.core" },
+        { import = "lazyvim.plugins.extras.dap.core" },
+        { import = "lazyvim.plugins.extras.formatting.prettier" },
+        { import = "lazyvim.plugins.extras.linting.eslint" },
+        { import = "lazyvim.plugins.extras.util.project" },
+        { import = "lazyvim.plugins.extras.editor.telescope" },
+        { import = "lazyvim.plugins.extras.ui.treesitter-context" },
+
         -- import/override with your plugins
         { import = "plugins" },
     },
@@ -43,11 +52,3 @@ require("lazy").setup({
         },
     },
 })
-
-vim.g.lazyvim_java_lsp = false
-vim.g.lazyvim_java_dap = false
-
-local lspconfig = require("lspconfig")
-if lspconfig.jdtls then
-    lspconfig.jdtls.setup = function() end
-end

@@ -1,8 +1,6 @@
 -- bootstrap lazy.nvim, LazyVim and your plugins
 require("config.lazy")
-require("spring-boot-commands").setup()
 require("c-commands").setup()
-require("microservices").setup()
 
 vim.api.nvim_create_autocmd("VimLeave", {
     callback = function()
