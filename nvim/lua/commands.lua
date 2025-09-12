@@ -6,13 +6,13 @@ vim.api.nvim_create_user_command("JavaSwitchWorkspace", function()
 end, {})
 
 vim.api.nvim_create_user_command("JavaWorkspaceInfo", function()
-    local clients = vim.lsp.get_active_clients({ name = "jdtls" })
+    local clients = vim.lsp.get_clients({ name = "jdtls" })
     if #clients > 0 then
         local client = clients[1]
         print("Workspace: " .. (client.config.root_dir or "N/A"))
         print("Working Directory: " .. vim.fn.getcwd())
     else
-        print("JDTLS não está ativo")
+        print("JDTLS not active")
     end
 end, {})
 

@@ -1,6 +1,5 @@
 -- bootstrap lazy.nvim, LazyVim and your plugins
 require("config.lazy")
-require("c-commands").setup()
 
 vim.api.nvim_create_autocmd("VimLeave", {
     callback = function()
@@ -54,7 +53,7 @@ for _, type in ipairs(java_types) do
         java_generator.create_java_file(type, file_name, custom_package)
     end, {
         nargs = "*",
-        desc = "Criar " .. type .. " Java",
+        desc = "Create " .. type .. " Java",
     })
 end
 
@@ -93,4 +92,26 @@ vim.api.nvim_create_autocmd("QuickFixCmdPost", {
     callback = function()
         vim.cmd("cwindow")
     end,
+})
+
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+vim.opt.termguicolors = true
+
+require("nvim-tree").setup()
+
+require("nvim-tree").setup({
+    sort = {
+        sorter = "case_sensitive",
+    },
+    view = {
+        width = 30,
+    },
+    renderer = {
+        group_empty = true,
+    },
+    filters = {
+        dotfiles = true,
+    },
 })

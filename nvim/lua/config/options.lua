@@ -44,3 +44,30 @@ opt.fileencoding = "utf-8"
 
 -- Java memory settings
 vim.env.JAVA_TOOL_OPTIONS = "-Xmx2G -XX:+UseG1GC"
+
+-- Auto-save related
+vim.opt.autowrite = true -- Enable auto write
+vim.opt.confirm = true -- Confirm to save changes before exiting modified buffer
+vim.opt.autoread = true -- Auto reload files changed outside vim
+
+-- Buffer related
+vim.opt.hidden = true -- Enable background buffers
+vim.opt.splitkeep = "screen" -- Maintain screen position when splitting
+
+-- Backup and swap
+vim.opt.backup = false
+vim.opt.writebackup = false
+vim.opt.swapfile = false
+
+-- Session options
+vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
+-- Better display
+vim.opt.showmode = false -- Dont show mode since we have a statusline
+vim.opt.showcmd = false -- Don't show command in the last line
+
+-- File detection
+vim.opt.fileformats = "unix,dos,mac"
+
+-- Neo-tree related
+vim.g.neo_tree_remove_legacy_commands = 1 -- Remove legacy commands

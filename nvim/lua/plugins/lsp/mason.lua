@@ -1,8 +1,24 @@
 return {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     dependencies = {
-        "williamboman/mason-lspconfig.nvim",
         "WhoIsSethDaniel/mason-tool-installer.nvim",
+    },
+    {
+        "mason-org/mason-lspconfig.nvim",
+        opts = {
+            ensure_installed = {
+                "jdtls",
+                "lemminx", -- XML
+                "yamlls",
+                "jsonls",
+                "dockerls",
+                "docker_compose_language_service",
+            },
+        },
+        dependencies = {
+            { "mason-org/mason.nvim", opts = {} },
+            "neovim/nvim-lspconfig",
+        },
     },
     config = function()
         require("mason").setup({
@@ -15,16 +31,7 @@ return {
             },
         })
 
-        require("mason-lspconfig").setup({
-            ensure_installed = {
-                "jdtls",
-                "lemminx", -- XML
-                "yamlls",
-                "jsonls",
-                "dockerls",
-                "docker_compose_language_service",
-            },
-        })
+        require("mason-lspconfig").setup()
 
         require("mason-tool-installer").setup({
             ensure_installed = {
