@@ -16,7 +16,7 @@ return {
           highlight_git = true,
         },
         filters = {
-          dotfiles = false,
+          dotfiles = true,
           custom = { "^.git$", "^node_modules$", "^target$", "^build$" },
         },
         git = { enable = true },
