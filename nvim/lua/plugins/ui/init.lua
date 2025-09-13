@@ -1,5 +1,5 @@
 return {
     { import = "plugins.ui.theme" },
     { import = "plugins.ui.lualine" },
-    { import = "plugins.ui.home" },
+    { import = "plugins.ui.dashboard" },
 }
