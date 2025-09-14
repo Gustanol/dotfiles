@@ -6,11 +6,23 @@ return {
 		build = ":MasonUpdate",
 		opts = {
 			ensure_installed = {
-				"jdtls", -- Java Language Server
-				"clangd", -- C/C++ Language Server
+				-- LSPs
+				"jdtls",
+				"clangd",
+
+				-- Formatters
 				"google-java-format",
 				"clang-format",
-				"checkstyle", -- Java linter
+
+				-- Linters
+				"checkstyle",
+				"eslint_d", -- JavaScript/TypeScript
+				--"ruff", -- Python
+				"luacheck", -- Lua
+				--"shellcheck", -- Shell scripts
+				--"hadolint", -- Dockerfile
+				--"yamllint", -- YAML
+				--"markdownlint-cli2", -- Markdown
 			},
 			ui = {
 				border = "rounded",
