@@ -1,11 +1,30 @@
 return {
-  'nvim-telescope/telescope.nvim', branch = '0.1.x',
-  dependencies = { 'nvim-lua/plenary.nvim' },
-  cmd = "Telescope",
-  keys = {
-     { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
-     { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Grep" },
-     { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Open buffers" },
-     { "<leader>fp", "<cmd>FindProjects<cr>", desc = "Projects" },
-  },
+	"nvim-telescope/telescope.nvim",
+	branch = "0.1.x",
+	dependencies = {
+		"nvim-lua/plenary.nvim",
+		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+		"nvim-telescope/telescope-file-browser.nvim",
+	},
+	cmd = "Telescope",
+	config = function()
+		local telescope = require("telescope")
+		telescope.setup({
+			defaults = {
+				file_ignore_patterns = { "node_modules", ".git" },
+			},
+			extensions = {
+				file_browser = {},
+			},
+		})
+		telescope.load_extension("file_browser")
+		telescope.load_extension("fzf")
+	end,
+	keys = {
+		{ "<leader>tf", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
+		{ "<leader>tg", "<cmd>Telescope live_grep<cr>", desc = "Grep" },
+		{ "<leader>tb", "<cmd>Telescope buffers<cr>", desc = "Open buffers" },
+		{ "<leader>tp", "<cmd>Telescope projects<cr>", desc = "Projects" }, -- ou outro comando válido
+		{ "<leader>e", "<cmd>Telescope file_browser<cr>", desc = "File Browser" },
+	},
 }
