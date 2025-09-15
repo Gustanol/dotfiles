@@ -2,3 +2,5 @@
 ./qutebrowser/bookmarks
 nvim-lazyvim-backup
 ./nvim/swap
+nvimd
+undo

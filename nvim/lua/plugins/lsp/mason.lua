@@ -1,56 +1,84 @@
 return {
-    "mason-org/mason.nvim",
-    dependencies = {
-        "WhoIsSethDaniel/mason-tool-installer.nvim",
-    },
-    {
-        "mason-org/mason-lspconfig.nvim",
-        opts = {
-            ensure_installed = {
-                "jdtls",
-                "lemminx", -- XML
-                "yamlls",
-                "jsonls",
-                "dockerls",
-                "docker_compose_language_service",
-            },
-        },
-        dependencies = {
-            { "mason-org/mason.nvim", opts = {} },
-            "neovim/nvim-lspconfig",
-        },
-    },
-    config = function()
-        require("mason").setup({
-            ui = {
-                icons = {
-                    package_installed = "✓",
-                    package_pending = "➜",
-                    package_uninstalled = "✗",
-                },
-            },
-        })
+	{
+		"williamboman/mason.nvim",
+		cmd = "Mason",
+		build = ":MasonUpdate",
+		opts = {
+			ensure_installed = {
+				-- LSPs
+				"jdtls",
+				"clangd",
 
-        require("mason-lspconfig").setup()
+				-- Formatters
+				"google-java-format",
+				"clang-format",
 
-        require("mason-tool-installer").setup({
-            ensure_installed = {
-                -- Formatters
-                "google-java-format",
-                "prettier",
+				-- Linters
+				"checkstyle",
+				"eslint_d", -- JavaScript/TypeScript
+				--"ruff", -- Python
+				"luacheck", -- Lua
+				--"shellcheck", -- Shell scripts
+				--"hadolint", -- Dockerfile
+				--"yamllint", -- YAML
+				--"markdownlint-cli2", -- Markdown
+			},
+			ui = {
+				border = "rounded",
+				icons = {
+					package_installed = "✓",
+					package_pending = "➜",
+					package_uninstalled = "✗",
+				},
+			},
+		},
+		config = function(_, opts)
+			require("mason").setup(opts)
 
-                -- Linters
-                "checkstyle",
+			local mr = require("mason-registry")
+			mr:on("package:install:success", function()
+				vim.notify("✓ " .. pkg.name .. " installed successfuly!", vim.log.levels.INFO)
+				vim.defer_fn(function()
+					require("lazy.core.handler.event").trigger({
+						event = "FileType",
+						buf = vim.api.nvim_get_current_buf(),
+					})
+				end, 100)
+			end)
 
-                -- Debug Adapters
-                "java-debug-adapter",
-                "java-test",
+			mr:on("package:install:failed", function(pkg)
+				vim.notify("✗ Failed to install " .. pkg.name, vim.log.levels.ERROR)
+			end)
 
-                -- Others
-                "jq",
-            },
-            auto_update = false,
-            run_on_start = true,
-        })
-    end,
+			local function ensure_installed()
+				for _, tool in ipairs(opts.ensure_installed) do
+					local p = mr.get_package(tool)
+					if not p:is_installed() then
+						p:install()
+					end
+				end
+			end
+
+			if mr.refresh then
+				mr.refresh(ensure_installed)
+			else
+				ensure_installed()
+			end
+		end,
+	},
+
+	{
+		"williamboman/mason-lspconfig.nvim",
+		dependencies = {
+			"williamboman/mason.nvim",
+			"neovim/nvim-lspconfig",
+		},
+		opts = {
+			ensure_installed = {
+				"jdtls",
+				"clangd",
+			},
+			automatic_installation = true,
+		},
+	},
 }
