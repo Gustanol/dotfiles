@@ -6,9 +6,13 @@ return {
 		spec = {
 			{ "<leader>t", group = "Telescope" },
 			{ "<leader>a", group = "Auto-save" },
-			{ "<leader>l", group = "Linting" },
+			{ "<leader>L", group = "Linting" },
 			{ "<leader>d", group = "Diagnostics" },
 			{ "<leader>n", group = "Notifications" },
+			{ "<leader>l", group = "LSP" },
+			{ "<leader>Lw", group = "Workspace" },
+			{ "<leader>c", group = "C keymaps" },
+			{ "<leader>j", group = "Java" },
 		},
 	},
 }

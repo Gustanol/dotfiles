@@ -62,21 +62,33 @@ return {
 				vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 				vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
 				vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
-				vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)
-				vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts)
-				vim.keymap.set("n", "<leader>wl", function()
+				vim.keymap.set(
+					"n",
+					"<leader>lwa",
+					vim.lsp.buf.add_workspace_folder,
+					opts,
+					{ desc = "Add a folder to workspace" }
+				)
+				vim.keymap.set(
+					"n",
+					"<leader>lwr",
+					vim.lsp.buf.remove_workspace_folder,
+					opts,
+					{ desc = "Remove a folder from workspace" }
+				)
+				vim.keymap.set("n", "<leader>lwl", function()
 					print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-				end, opts)
-				vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, opts)
-				vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-				vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
+				end, opts, { desc = "List folder from workspace" })
+				vim.keymap.set("n", "<leader>c", vim.lsp.buf.type_definition, opts)
+				--vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+				vim.keymap.set({ "n", "v" }, "<leader>lca", vim.lsp.buf.code_action, opts, { desc = "Code actions" })
 				vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 
 				-- Diagnostics
-				vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
+				vim.keymap.set("n", "<leader>Le", vim.diagnostic.open_float, opts, { desc = "Open diagnostics" })
 				vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
 				vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-				vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
+				--vim.keymap.set("n", "<leader>Lq", vim.diagnostic.setloclist, opts)
 
 				-- Format on save
 				if client.supports_method("textDocument/formatting") then

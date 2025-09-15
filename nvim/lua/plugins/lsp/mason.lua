@@ -37,12 +37,17 @@ return {
 
 			local mr = require("mason-registry")
 			mr:on("package:install:success", function()
+				vim.notify("✓ " .. pkg.name .. " installed successfuly!", vim.log.levels.INFO)
 				vim.defer_fn(function()
 					require("lazy.core.handler.event").trigger({
 						event = "FileType",
 						buf = vim.api.nvim_get_current_buf(),
 					})
 				end, 100)
+			end)
+
+			mr:on("package:install:failed", function(pkg)
+				vim.notify("✗ Failed to install " .. pkg.name, vim.log.levels.ERROR)
 			end)
 
 			local function ensure_installed()

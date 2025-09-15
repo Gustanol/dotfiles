@@ -226,8 +226,8 @@ return {
 						vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 
 						vim.keymap.set("n", "<leader>jo", jdtls.organize_imports, { desc = "Organize Imports" })
-						vim.keymap.set("n", "<leader>jv", jdtls.extract_variable, { desc = "Extract Variable" })
-						vim.keymap.set("n", "<leader>jc", jdtls.extract_constant, { desc = "Extract Constant" })
+						vim.keymap.set("n", "<leader>jev", jdtls.extract_variable, { desc = "Extract Variable" })
+						vim.keymap.set("n", "<leader>jec", jdtls.extract_constant, { desc = "Extract Constant" })
 						vim.keymap.set(
 							"v",
 							"<leader>jm",
@@ -235,6 +235,7 @@ return {
 							{ desc = "Extract Method" }
 						)
 
+						-- Debugging (se nvim-dap estiver configurado)
 						vim.keymap.set("n", "<leader>df", jdtls.test_class, { desc = "Debug Test Class" })
 						vim.keymap.set("n", "<leader>dn", jdtls.test_nearest_method, { desc = "Debug Test Method" })
 
@@ -245,21 +246,45 @@ return {
 
 						-- Auto format on save
 						if client.supports_method("textDocument/formatting") then
+							local format_group =
+								vim.api.nvim_create_augroup("LspFormatJava." .. bufnr, { clear = true })
+
 							vim.api.nvim_create_autocmd("BufWritePre", {
-								group = vim.api.nvim_create_augroup("LspFormatJava." .. bufnr, {}),
+								group = format_group,
 								buffer = bufnr,
-								callback = function()
+								callback = function(ev)
+									if vim.g.disable_autoformat or vim.b[ev.buf].disable_autoformat then
+										return
+									end
+
+									if vim.b[ev.buf].autosave_formatting then
+										return
+									end
+
+									vim.b[ev.buf].autosave_formatting = true
+
 									vim.lsp.buf.format({
-										timeout_ms = 3000,
+										timeout_ms = 5000,
+										bufnr = ev.buf,
 										filter = function(c)
 											return c.id == client.id
 										end,
 									})
+
+									vim.defer_fn(function()
+										vim.b[ev.buf].autosave_formatting = nil
+									end, 1000)
+								end,
+							})
+
+							vim.api.nvim_create_autocmd("LspDetach", {
+								buffer = bufnr,
+								callback = function()
+									pcall(vim.api.nvim_del_augroup_by_id, format_group)
 								end,
 							})
 						end
 
-						-- Print project info
 						print("Java project detected: " .. project_type .. " at " .. root_dir)
 					end,
 				}
