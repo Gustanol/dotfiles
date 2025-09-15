@@ -17,7 +17,7 @@ return {
 				"checkstyle",
 				"eslint_d", -- JavaScript/TypeScript
 				--"ruff", -- Python
-				"luacheck", -- Lua
+				--"luacheck", -- Lua
 				--"shellcheck", -- Shell scripts
 				--"hadolint", -- Dockerfile
 				--"yamllint", -- YAML

@@ -1,2 +1,2 @@
-require("commands.java")
-require("commands.c")
+require("commands.java-generator")
+require("commands.c-generator")

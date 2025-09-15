@@ -235,7 +235,7 @@ return {
 							{ desc = "Extract Method" }
 						)
 
-						-- Debugging (se nvim-dap estiver configurado)
+						-- Debugging
 						vim.keymap.set("n", "<leader>df", jdtls.test_class, { desc = "Debug Test Class" })
 						vim.keymap.set("n", "<leader>dn", jdtls.test_nearest_method, { desc = "Debug Test Method" })
 

@@ -1,7 +1,9 @@
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local java_generator = require("commands.java-generator")
+local c_generator = require("commands.c-generator")
 
+-------------------------------------------- Java commands
 local java_types = {
 	"class",
 	"interface",
@@ -36,6 +38,25 @@ for _, type in ipairs(java_types) do
 		desc = "Create " .. type .. " Java",
 	})
 end
+-------------------------------------------- Java commands
+
+-------------------------------------------- C commands
+vim.api.nvim_create_user_command("CCreateProject", function()
+	c_generator.create_c_project()
+end, { desc = "Create C project" })
+
+vim.api.nvim_create_user_command("AddIncludeGuard", function()
+	c_generator.add_include_guard()
+end, { desc = "Add include guard to header files" })
+
+vim.api.nvim_create_user_command("ToggleHeaderSource", function()
+	c_generator.toggle_header_source()
+end, { desc = "Toggle header source" })
+
+vim.api.nvim_create_user_command("MakeProject", function()
+	c_generator.make_project()
+end, { desc = "Make project" })
+-------------------------------------------- C commands
 
 local function change_dir(prompt_bufnr)
 	local entry = action_state.get_selected_entry()

@@ -24,7 +24,8 @@ return {
 		{ "<leader>tf", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
 		{ "<leader>tg", "<cmd>Telescope live_grep<cr>", desc = "Grep" },
 		{ "<leader>tb", "<cmd>Telescope buffers<cr>", desc = "Open buffers" },
-		{ "<leader>tp", "<cmd>Telescope projects<cr>", desc = "Projects" }, -- ou outro comando válido
+		{ "<leader>tp", "<cmd>Telescope projects<cr>", desc = "Projects" },
 		{ "<leader>e", "<cmd>Telescope file_browser<cr>", desc = "File Browser" },
+		{ "<leader>td", "<cmd>bdelete<cr>", desc = "Delete current buffer" },
 	},
 }
