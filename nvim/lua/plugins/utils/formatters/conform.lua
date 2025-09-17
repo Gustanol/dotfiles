@@ -1,125 +1,120 @@
 return {
 	"stevearc/conform.nvim",
-	dependencies = {
-		"williamboman/mason.nvim",
-	},
-	event = { "BufWritePre" },
-	cmd = { "ConformInfo" },
-	keys = {
-		{
-			"<leader>f",
-			function()
-				require("conform").format({
-					async = true,
-					lsp_fallback = true,
-					timeout_ms = 3000,
-				})
-			end,
-			mode = { "n", "v" },
-			desc = "Format file or range",
-		},
-	},
-	opts = {
-		formatters_by_ft = {
-			java = { "google-java-format" },
-			c = { "clang-format" },
-			lua = { "stylua" },
-			python = { "isort", "black" },
-			javascript = { { "prettierd", "prettier" } },
-			typescript = { { "prettierd", "prettier" } },
-			javascriptreact = { { "prettierd", "prettier" } },
-			typescriptreact = { { "prettierd", "prettier" } },
-			json = { { "prettierd", "prettier" } },
-			html = { { "prettierd", "prettier" } },
-			css = { { "prettierd", "prettier" } },
-			markdown = { { "prettierd", "prettier" } },
-		},
+	event = { "BufReadPre", "BufNewFile" },
+	config = function()
+		local conform = require("conform")
 
-		formatters = {
-			["google-java-format"] = {
-				prepend_args = { "--aosp" }, -- Android Open Source Project style (4 espaços)
-				timeout_ms = 5000,
+		conform.setup({
+			formatters_by_ft = {
+				java = { "google-java-format" },
+				c = { "clang-format" },
+				cpp = { "clang-format" },
+				javascript = { "prettier" },
+				typescript = { "prettier" },
+				javascriptreact = { "prettier" },
+				typescriptreact = { "prettier" },
+				css = { "prettier" },
+				html = { "prettier" },
+				json = { "prettier" },
+				yaml = { "prettier" },
+				markdown = { "prettier" },
+
+				lua = { "stylua" },
+
+				sh = { "shfmt" },
+				bash = { "shfmt" },
+
+				xml = { "xmlformat" },
 			},
-			["clang-format"] = {
-				prepend_args = {
-					"--style={IndentWidth: 4, TabWidth: 4, UseTab: Never, BreakBeforeBraces: Linux}",
+
+			formatters = {
+				["google-java-format"] = {
+					args = { "--aosp", "-" }, -- Android Open Source Project style
 				},
-				timeout_ms = 3000,
+				["clang-format"] = {
+					args = {
+						"--style={BasedOnStyle: Google, IndentWidth: 4, ColumnLimit: 100}",
+						"-",
+					},
+				},
+				prettier = {
+					args = {
+						"--stdin-filepath",
+						"$FILENAME",
+						"--tab-width",
+						"2",
+						"--print-width",
+						"100",
+					},
+				},
+				stylua = {
+					args = {
+						"--indent-type",
+						"Spaces",
+						"--indent-width",
+						"2",
+						"--column-width",
+						"100",
+						"-",
+					},
+				},
+				shfmt = {
+					args = { "-i", "2", "-ci", "-sr", "-" },
+				},
 			},
-		},
 
-		format_on_save = nil,
-		format_after_save = function(bufnr)
-			if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
-				return
-			end
+			format_on_save = nil,
 
-			if vim.b[bufnr].conform_last_format and (vim.loop.now() - vim.b[bufnr].conform_last_format) < 1000 then
-				return
-			end
-
-			vim.b[bufnr].conform_last_format = vim.loop.now()
-
-			return {
-				timeout_ms = 3000,
-				lsp_fallback = true,
-				async = true,
-			}
-		end,
-	},
-
-	config = function(_, opts)
-		require("conform").setup(opts)
-
-		vim.api.nvim_create_user_command("FormatDisable", function(args)
-			if args.bang then
-				vim.g.disable_autoformat = true
-				print("Autoformat disabled globally")
-			else
-				vim.b.disable_autoformat = true
-				print("Autoformat disabled for current buffer")
-			end
-		end, {
-			desc = "Disable autoformat-on-save",
-			bang = true,
-		})
-
-		vim.api.nvim_create_user_command("FormatEnable", function()
-			vim.b.disable_autoformat = false
-			vim.g.disable_autoformat = false
-			print("Autoformat enabled")
-		end, {
-			desc = "Re-enable autoformat-on-save",
-		})
-
-		vim.api.nvim_create_user_command("FormatSafe", function()
-			local bufnr = vim.api.nvim_get_current_buf()
-
-			local clients = vim.lsp.get_active_clients({ bufnr = bufnr })
-			for _, client in pairs(clients) do
-				if client.name == "jdtls" and client.server_capabilities.documentFormattingProvider then
-					vim.defer_fn(function()
-						require("conform").format({
-							bufnr = bufnr,
-							async = false,
-							timeout_ms = 5000,
-							lsp_fallback = true,
-						})
-					end, 500)
+			format_after_save = function(bufnr)
+				if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
 					return
 				end
-			end
 
-			require("conform").format({
-				bufnr = bufnr,
-				async = false,
-				timeout_ms = 3000,
-				lsp_fallback = true,
-			})
-		end, {
-			desc = "Format safely avoiding conflicts",
+				if vim.b[bufnr].conform_last_format and (vim.loop.now() - vim.b[bufnr].conform_last_format) < 1000 then
+					return
+				end
+
+				vim.b[bufnr].conform_last_format = vim.loop.now()
+
+				return {
+					timeout_ms = 3000,
+					lsp_fallback = true,
+					async = true,
+				}
+			end,
+
+			log_level = vim.log.levels.ERROR,
 		})
 
-		vim.keymap.set("n", "<leader>fs", "<cmd>FormatSafe<cr>", { desc = "Format safely" })
+		vim.keymap.set({ "n", "v" }, "<leader>f", function()
+			conform.format({
+				lsp_fallback = true,
+				async = false,
+				timeout_ms = 1000,
+			})
+		end, { desc = "Format file or range (in visual mode)" })
+
+		vim.api.nvim_create_user_command("FormatDebug", function()
+			conform.format({
+				lsp_fallback = true,
+				async = false,
+				timeout_ms = 1000,
+			}, function(err)
+				if err then
+					vim.notify("Format error: " .. err, vim.log.levels.ERROR)
+				else
+					vim.notify("Formatted successfully!", vim.log.levels.INFO)
+				end
+			end)
+		end, { desc = "Format with debug info" })
+
+		vim.api.nvim_create_autocmd("User", {
+			pattern = "MasonToolsStartingInstall",
+			callback = function()
+				vim.schedule(function()
+					print("Installing formatters...")
+				end)
+			end,
+		})
 	end,
 }

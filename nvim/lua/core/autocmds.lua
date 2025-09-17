@@ -92,10 +92,12 @@ vim.api.nvim_create_user_command("FindProjects", function()
 	})
 end, {})
 
-vim.api.nvim_create_autocmd("VimLeave", {
-	callback = function()
-		for _, client in pairs(vim.lsp.get_active_clients()) do
-			client.stop()
-		end
-	end,
+vim.api.nvim_create_autocmd("VimLeavePre", {
+  callback = function()
+    for _, client in pairs(vim.lsp.get_clients()) do
+      if client and client.stop then
+        client:stop()
+      end
+    end
+  end,
 })
