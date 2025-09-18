@@ -96,7 +96,7 @@ return {
             is_gradle = false,
             is_maven = false,
             is_multimodule = is_monorepo,
-            java_version = "17",
+            java_version = "21",
             subprojects = {},
             main_build_file = nil,
           }
@@ -171,12 +171,12 @@ return {
 
         local project_info = jdtls_cache[project_cache_key]
 
-        local memory_config = "-Xmx1g"
-        if project_info.is_multimodule then
-          memory_config = "-Xmx3g"
-        elseif project_info.is_spring_boot then
-          memory_config = "-Xmx2g"
-        end
+        local memory_config = "-Xmx2g"
+        --if project_info.is_multimodule then
+        --memory_config = "-Xmx3g"
+        --elseif project_info.is_spring_boot then
+        --memory_config = "-Xmx2g"
+        --end
 
         local function get_java_executable()
           if jdtls_cache.java_executable then
@@ -240,10 +240,9 @@ return {
             "-Dlog.protocol=true",
             "-Dlog.level=ALL",
             memory_config,
-            "-XX:+UseZGC",
-            "-XX:+UnlockExperimentalVMOptions",
+            "-Xms512m",
+            "-XX:+UseParallelGC",
             "-XX:GCTimeRatio=4",
-            "-XX:AdaptiveSizePolicyWeight=90",
             "--add-modules=ALL-SYSTEM",
             "--add-opens",
             "java.base/java.util=ALL-UNNAMED",
@@ -399,9 +398,15 @@ return {
 
           capabilities = (function()
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+            capabilities.workspace = capabilities.workspace or {}
+            capabilities.workspace.workspaceEdit = capabilities.workspace.workspaceEdit or {}
+
             capabilities.workspace.workspaceFolders = true
             capabilities.workspace.workspaceEdit.resourceOperations =
               { "create", "rename", "delete" }
+            capabilities.workspace.workspaceEdit.failureHandling = "abort"
+
             return capabilities
           end)(),
 

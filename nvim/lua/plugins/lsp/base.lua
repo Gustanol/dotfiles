@@ -53,7 +53,7 @@ return {
           source = "if_many",
         },
         float = {
-          source = "always",
+          source = true,
           border = "rounded",
         },
         signs = true,
@@ -62,11 +62,23 @@ return {
         severity_sort = true,
       })
 
-      local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
-      for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-      end
+      vim.diagnostic.config({
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = " ",
+            [vim.diagnostic.severity.WARN] = " ",
+            [vim.diagnostic.severity.INFO] = "󰋽 ",
+            [vim.diagnostic.severity.HINT] = " ",
+          },
+          numhl = {
+            [vim.diagnostic.severity.ERROR] = "DiagnosticSignErrorError",
+            [vim.diagnostic.severity.WARN] = "DiagnosticSignWarnWarn",
+            [vim.diagnostic.severity.INFO] = "DiagnosticSignInfoInfo",
+            [vim.diagnostic.severity.HINT] = "DiagnosticSignHintHint",
+          },
+          -- linehl = { ... },
+        },
+      })
 
       local on_attach = function(client, bufnr)
         local opts = { buffer = bufnr, silent = true }
@@ -81,7 +93,7 @@ return {
         vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
 
         vim.keymap.set("n", "<leader>lca", vim.lsp.buf.code_action, { desc = "Code actions" })
-        vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, { desc = "Rename" })
+        vim.keymap.set("n", "<leader>lrn", vim.lsp.buf.rename, { desc = "Rename" })
         vim.keymap.set("n", "<leader>f", function()
           vim.lsp.buf.format({ async = true })
         end, opts)

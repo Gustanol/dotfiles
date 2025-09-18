@@ -34,7 +34,6 @@ function M.setup_java_env()
           vim.fn.setenv("PATH", java_bin .. ":" .. current_path)
         end
 
-        print("🌟 Java configured automatically: " .. version .. " (" .. java_path .. ")")
         return true
       end
     end
