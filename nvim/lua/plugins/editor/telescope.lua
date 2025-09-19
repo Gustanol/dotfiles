@@ -22,6 +22,7 @@ return {
   end,
   keys = {
     { "<leader>tf", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
+    { "<leader>tn", "<cmd>enew<cr>", desc = "New file" },
     { "<leader>tg", "<cmd>Telescope live_grep<cr>", desc = "Grep" },
     { "<leader>tb", "<cmd>Telescope buffers<cr>", desc = "Open buffers" },
     { "<leader>tp", "<cmd>Telescope projects<cr>", desc = "Projects" },

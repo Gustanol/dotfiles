@@ -98,7 +98,6 @@ return {
             is_multimodule = is_monorepo,
             java_version = "21",
             subprojects = {},
-            main_build_file = nil,
           }
 
           local root_files_to_check = {
@@ -232,13 +231,12 @@ return {
         local config = {
           cmd = {
             get_java_executable(),
-            "-javaagent:"
-              .. vim.fn.expand("$HOME/.local/share/nvim/mason/packages/jdtls/lombok.jar"),
             "-Declipse.application=org.eclipse.jdt.ls.core.id1",
             "-Dosgi.bundles.defaultStartLevel=4",
             "-Declipse.product=org.eclipse.jdt.ls.core.product",
             "-Dlog.protocol=true",
             "-Dlog.level=ALL",
+            "-javaagent:" .. jdtls_cache.paths.jdtls .. "/lombok.jar",
             memory_config,
             "-Xms512m",
             "-XX:+UseParallelGC",
@@ -441,6 +439,7 @@ return {
                 { desc = "Open float diagnostics" },
               },
               { "n", "<leader>dq", vim.diagnostic.setloclist, { desc = "Show warnings" } },
+
               { "n", "<leader>jo", jdtls.organize_imports, { desc = "Organize imports" } },
               { "n", "<leader>jv", jdtls.extract_variable, { desc = "Extract variable" } },
               { "n", "<leader>jc", jdtls.extract_constant, { desc = "Extract constant" } },
@@ -491,9 +490,9 @@ return {
             vim.bo[bufnr].expandtab = true
 
             local status_info = {
-              "☕ JDTLS",
-              is_monorepo and "🏗️ Monorepo" or "📁 Project",
-              project_info.is_spring_boot and "🌱 Spring" or "",
+              "  JDTLS",
+              is_monorepo and "  Monorepo" or "📁 Project",
+              project_info.is_spring_boot and " Spring" or "",
               #project_info.subprojects > 0
                   and ("📦 " .. #project_info.subprojects .. " modules")
                 or "",
@@ -514,7 +513,7 @@ return {
       vim.api.nvim_create_autocmd("FileType", {
         pattern = "java",
         callback = function()
-          vim.defer_fn(setup_jdtls, 50) -- Delay menor para melhor responsividade
+          vim.defer_fn(setup_jdtls, 50)
         end,
       })
 
@@ -528,7 +527,7 @@ return {
       vim.api.nvim_create_user_command("JdtlsWorkspaceInfo", function()
         local workspace_root, is_monorepo = find_monorepo_root()
         print("📁 Workspace root: " .. workspace_root)
-        print("🏗️  Is monorepo: " .. (is_monorepo and "Yes" or "No"))
+        print("  Is monorepo: " .. (is_monorepo and "Yes" or "No"))
 
         if jdtls_cache.active_workspace then
           print("💾 Active workspace: " .. jdtls_cache.active_workspace)
