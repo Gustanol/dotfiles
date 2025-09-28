@@ -1,5 +1,5 @@
 return {
-    { import = "plugins.ui.theme" },
-    { import = "plugins.ui.lualine" },
-    { import = "plugins.ui.dashboard" },
+  require("plugins.ui.theme"),
+  require("plugins.ui.lualine"),
+  require("plugins.ui.dashboard"),
 }

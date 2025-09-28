@@ -1,6 +1,6 @@
 return {
-	{ import = "plugins.editor.treesitter" },
-	{ import = "plugins.editor.telescope" },
-	{ import = "plugins.editor.completion" },
-	{ import = "plugins.editor.notify.nvimnotify" },
+  require("plugins.editor.treesitter"),
+  require("plugins.editor.telescope"),
+  require("plugins.editor.completion"),
+  require("plugins.editor.notify.nvimnotify"),
 }

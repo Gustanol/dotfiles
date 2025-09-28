@@ -1,7 +1,9 @@
 return {
-	{ import = "plugins.utils.whichkey" },
-	{ import = "plugins.utils.formatters.conform" },
-	{ import = "plugins.utils.autosave" },
-	{ import = "plugins.utils.wakatime" },
-	{ import = "plugins.utils.mason-tools" },
+  require("plugins.utils.whichkey"),
+  require("plugins.utils.formatters.conform"),
+  require("plugins.utils.linters.nvimlint"),
+  require("plugins.utils.autosave"),
+  require("plugins.utils.wakatime"),
+  require("plugins.utils.mason-tools"),
+  require("plugins.utils.autopairs"),
 }

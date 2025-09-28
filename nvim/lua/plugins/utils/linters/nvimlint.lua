@@ -24,6 +24,8 @@ return {
 
       dockerfile = { "hadolint" },
 
+      makefile = { "makecheck" },
+
       markdown = { "markdownlint" },
     }
 
