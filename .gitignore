@@ -4,3 +4,4 @@ nvim-lazyvim-backup
 ./nvim/swap
 nvimd
 undo
+swap

@@ -1,2 +1,5 @@
 require("commands.java-generator")
 require("commands.c-generator")
+require("commands.java-diagnostic")
+require("commands.asm-commands")
+require("commands.asm-cheatsheet")

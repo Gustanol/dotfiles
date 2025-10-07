@@ -3,7 +3,7 @@ return {
   cmd = "ASToggle",
   event = { "InsertLeave", "TextChanged" },
   keys = {
-    { "<leader>at", "<cmd>ASToggle<CR>", desc = "Toggle auto-save" },
+    { "<leader>st", "<cmd>ASToggle<CR>", desc = "Toggle auto-save" },
   },
   opts = {
     enabled = true,

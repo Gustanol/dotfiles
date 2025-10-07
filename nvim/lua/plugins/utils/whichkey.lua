@@ -5,7 +5,7 @@ return {
     preset = "modern",
     spec = {
       { "<leader>t", group = "Telescope" },
-      { "<leader>a", group = "Auto-save" },
+      { "<leader>a", group = "Assembly" },
       { "<leader>L", group = "Linting" },
       { "<leader>d", group = "Diagnostics" },
       { "<leader>n", group = "Notifications" },

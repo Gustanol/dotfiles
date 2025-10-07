@@ -32,9 +32,9 @@ opt.autoread = true
 opt.backup = false
 opt.writeany = true
 opt.writebackup = false
-opt.swapfile = false
-opt.undofile = true
-opt.undodir = vim.fn.expand("~/.config/nvim/undo")
+opt.swapfile = true
+opt.undofile = false
+--opt.undodir = vim.fn.expand("~/.config/nvim/undo")
 
 opt.termguicolors = true
 opt.number = true
@@ -72,30 +72,30 @@ opt.splitright = true
 opt.clipboard = "unnamedplus"
 
 local disabled_built_ins = {
-	"gzip",
-	"zip",
-	"zipPlugin",
-	"tar",
-	"tarPlugin",
-	"getscript",
-	"getscriptPlugin",
-	"vimball",
-	"vimballPlugin",
-	"2html_plugin",
-	"logipat",
-	"rrhelper",
-	"spellfile_plugin",
-	"matchit",
-	"tutor",
-	"rplugin",
-	"syntax",
-	"synmenu",
-	"optwin",
-	"compiler",
-	"bugreport",
-	"ftplugin",
+  "gzip",
+  "zip",
+  "zipPlugin",
+  "tar",
+  "tarPlugin",
+  "getscript",
+  "getscriptPlugin",
+  "vimball",
+  "vimballPlugin",
+  "2html_plugin",
+  "logipat",
+  "rrhelper",
+  "spellfile_plugin",
+  "matchit",
+  "tutor",
+  "rplugin",
+  "syntax",
+  "synmenu",
+  "optwin",
+  "compiler",
+  "bugreport",
+  "ftplugin",
 }
 
 for _, plugin in pairs(disabled_built_ins) do
-	g["loaded_" .. plugin] = 1
+  g["loaded_" .. plugin] = 1
 end
