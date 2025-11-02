@@ -17,11 +17,12 @@ tooltip,
 #custom-volume,
 #custom-network-info,
 #custom-appmenu,
+#custom-screen-recorder,
 #custom-temp,
 #custom-brightness,
 #custom-updates,
 #custom-net-speed {
-  font-family: 'JetBrainsMono Nerd Font';
+  font-family: "JetBrainsMono Nerd Font";
 }
 
 #custom-network-info,
@@ -30,6 +31,8 @@ tooltip,
 #cpu,
 #clock,
 #custom-weather,
+#custom-screen-recorder,
+#custom-appmenu,
 #custom-updates,
 #custom-net-speed {
   background: #89b4fa;
@@ -38,6 +41,7 @@ tooltip,
 
 #custom-network-info,
 #memory,
+#custom-appmenu,
 #clock {
   padding: 2px 5px;
   border-bottom-left-radius: 10px;
@@ -46,13 +50,13 @@ tooltip,
 
 #custom-net-speed,
 #cpu,
+#custom-screen-recorder,
 #custom-weather {
   padding: 2px 5px;
   border-bottom-right-radius: 10px;
   border-top-right-radius: 10px;
 }
 
-#custom-appmenu,
 #custom-volume,
 #custom-brightness,
 #custom-updates {
@@ -64,7 +68,7 @@ tooltip,
 
 #custom-volume,
 #custom-brightness,
-#custom-appmenu,
+#custom-screen-recorder,
 #custom-net-speed {
   margin: 0 10px 0 0;
 }

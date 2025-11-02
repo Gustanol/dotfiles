@@ -3,15 +3,23 @@ local M = {}
 M.current_arch = "x86_64"
 
 M.syscalls_x64 = {
-  { num = 0, name = "read", args = "unsigned int fd, char *buf, size_t count" },
-  { num = 1, name = "write", args = "unsigned int fd, const char *buf, size_t count" },
-  { num = 2, name = "open", args = "const char *filename, int flags, umode_t mode" },
-  { num = 3, name = "close", args = "unsigned int fd" },
-  { num = 60, name = "exit", args = "int error_code" },
-  { num = 57, name = "fork", args = "void" },
+  { num = 0, name = "sys_read", args = "unsigned int fd, char *buf, size_t count" },
+  { num = 1, name = "sys_write", args = "unsigned int fd, const char *buf, size_t count" },
+  { num = 2, name = "sys_open", args = "const char *filename, int flags, umode_t mode" },
+  { num = 3, name = "sys_close", args = "unsigned int fd" },
+  { num = 4, name = "sys_stat", args = "unsigned int fd, struct stat *statbuf" },
+  { num = 5, name = "sys_fstat", args = "const char *filename, struct stat *statbuf" },
+  {
+    num = 9,
+    name = "sys_mmap",
+    args = "unsigned long addr, unsigned long len, unsigned long prot, unsigned long flags, unsigned long fd, unsigned long off",
+  },
+  { num = 11, name = "sys_mumap", args = "unsigned long addr, size_t len" },
+  { num = 60, name = "sys_exit", args = "int error_code" },
+  { num = 57, name = "sys_fork", args = "void" },
   {
     num = 59,
-    name = "execve",
+    name = "sys_execve",
     args = "const char *filename, char *const argv[], char *const envp[]",
   },
 }

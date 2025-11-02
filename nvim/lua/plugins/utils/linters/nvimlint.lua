@@ -17,16 +17,14 @@ return {
 
       lua = { "luacheck" },
 
-      sh = { "shellcheck" },
-      bash = { "shellcheck" },
+      --sh = { "shellcheck" },
+      --bash = { "shellcheck" },
 
       yaml = { "yamllint" },
 
       dockerfile = { "hadolint" },
 
       makefile = { "makecheck" },
-
-      markdown = { "markdownlint" },
     }
 
     lint.linters.cppcheck.args = {

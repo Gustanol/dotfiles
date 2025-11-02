@@ -13,7 +13,7 @@ M.show_cheatsheet = function()
   • Literals has $ prefix
   • Length suffix: b (byte), w (word), l (long), q (quad)
 
-[ SYSCALLS PRINCIPAIS ]
+[ SOME SYSCALLS ]
   rax=0   read    (rdi=fd, rsi=buf, rdx=count)
   rax=1   write   (rdi=fd, rsi=buf, rdx=count)
   rax=2   open    (rdi=filename, rsi=flags, rdx=mode)
@@ -23,12 +23,22 @@ M.show_cheatsheet = function()
 [ REGISTERS ]
   %rax - Acumulator, syscall number, return
   %rbx - Base
-  %rcx - Counter, 4º arg
-  %rdx - Data, 3º arg
-  %rsi - Source index, 2º arg
-  %rdi - Destination index, 1º arg
+  %rcx - Counter
+  %rdx - Data
+  %rsi - Source index
+  %rdi - Destination index
   %rbp - Base pointer
   %rsp - Stack pointer
+
+[ ARGUMENTS ORDER ]
+  Syscalls:     Others:
+    1. %rax       1. %rdi
+    2. %rdi       2. %rsi
+    3. %rsi       3. %rdx
+    4. %rdx       4. %rcx
+    5. %r10       5. %r8
+    6. %r8        6. %r9
+    7. %r9
 
 [ COMMON INSTRUCTIONS ]
   movq %src, %dst   - Cut/copy
@@ -40,9 +50,9 @@ M.show_cheatsheet = function()
   decq %dst         - Decrements
   pushq %src
   popq %dst
-  call label      - Call function
-  ret             - Return
-  syscall
+  call label        - Call function
+  ret               - Return
+  syscall           - Call the syscall
 
 [ LENGTH SUFFIXES ]
   b - byte    (8 bits)   - movb, addb
@@ -51,6 +61,7 @@ M.show_cheatsheet = function()
   q - quad    (64 bits)  - movq, addq
 
 [ CONDITIONAL JUMPS ]
+  js      - Jump if signed
   je/jz   - Jump if equal/zero
   jne/jnz - Jump if not equal/not zero
   jg/jnle - Jump if greater
@@ -101,7 +112,7 @@ M.show_cheatsheet = function()
   <leader>ay  - Look for symbols
   <leader>an  - New project
 
-[ COMANDOS ]
+[ COMMANDS ]
   :AsmCompile     - Compile current file
   :AsmRun         - Compile and execute
   :AsmDebug       - Compile and debug
