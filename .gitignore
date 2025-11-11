@@ -1,7 +1,9 @@
-./qutebrowser/quickmarks
-./qutebrowser/bookmarks
 nvim-lazyvim-backup
 ./nvim/swap
 nvimd
 undo
 swap
+*.0
+dwm/dwm
+dmenu/dmenu
+st/st
