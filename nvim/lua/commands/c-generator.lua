@@ -202,7 +202,7 @@ function M.run_tests()
   for _, test_file in ipairs(test_files) do
     local test_name = vim.fn.fnamemodify(test_file, ":t:r")
     local compile_cmd =
-      string.format("gcc -Wall -Wextra -std=c11 -g -o %s %s", test_name, test_file)
+        string.format("gcc -Wall -Wextra -std=c11 -g -o %s %s", test_name, test_file)
 
     vim.fn.jobstart(compile_cmd, {
       on_exit = function(_, exit_code)
@@ -314,9 +314,8 @@ function M.create_c_project()
     '- "-W*"',
     '- "-std=c++*"',
     "",
-    "Index:",
-    "Background: Build",
-    "StandardLibrary: Yes",
+    "BasedOnStyle: LLVM",
+    "IndentWidth: 4",
     "",
     "InlayHints:",
     "Enabled: Yes",
@@ -341,6 +340,47 @@ function M.create_c_project()
     '- "bugprone-easily-swappable-parameters"',
     "UnusedIncludes: Strict",
     "MissingIncludes: Strict",
+    "",
+    "AlignTrailingComments:",
+    "\tKind: Always",
+    "\tOverEmptyLines: 2",
+    "",
+    "AlignConsecutiveAssignments:",
+    "\tEnabled: true",
+    "\tAcrossEmptyLines: true",
+    "\tAcrossComments: true",
+    "\tAlignCompound: true",
+    "\tPadOperators: false",
+    "",
+    "AlignConsecutiveShortCaseStatements:",
+    "\tEnabled: true",
+    "\tAcrossEmptyLines: true",
+    "\tAcrossComments: true",
+    "\tAlignCaseColons: true",
+    "\tAlignCaseArrows: true",
+    "",
+    "AlignConsecutiveDeclarations:",
+    "\tEnabled: true",
+    "\tAcrossEmptyLines: true",
+    "\tAcrossComments: true",
+    "\tAlignFunctionDeclarations: true",
+    "\tAlignFunctionPointers: true",
+    "",
+    "AlignConsecutiveMacros:",
+    "\tEnabled: true",
+    "\tAcrossEmptyLines: true",
+    "\tAcrossComments: true",
+    "",
+    "AlignConsecutiveAssignments:",
+    "\tEnabled: true",
+    "\tAcrossEmptyLines: true",
+    "\tAcrossComments: true",
+    "\tAlignCaseColons: true",
+    "",
+    "AlignConsecutiveTableGenCondOperatorColons:",
+    "\tEnabled: true",
+    "\tAcrossEmptyLines: true",
+    "\tAcrossComments: true",
   }
 
   vim.fn.writefile(dotclangd_content, project_name .. "/.clangd")

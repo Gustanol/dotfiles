@@ -15,11 +15,12 @@ static const char col_gray1[] = "#222222";
 static const char col_gray2[] = "#444444";
 static const char col_gray3[] = "#bbbbbb";
 static const char col_gray4[] = "#eeeeee";
+static const char col_gray5[] = "#555555";
 static const char col_cyan[] = "#005577";
 static const char *colors[][3] = {
     /*               fg         bg         border   */
     [SchemeNorm] = {col_gray3, col_gray1, col_gray2},
-    [SchemeSel] = {col_gray4, col_gray1, col_gray2},
+    [SchemeSel] = {col_gray4, col_gray1, col_gray5},
 };
 
 /* tagging */
@@ -73,9 +74,10 @@ static const char *dmenucmd[] = {
     "dmenu_run", "-m",      dmenumon, "-fn",    dmenufont, "-nb",     col_gray1,
     "-nf",       col_gray3, "-sb",    col_cyan, "-sf",     col_gray4, NULL};
 static const char *termcmd[] = {"st", NULL};
-static const char *browser[] = {"floorp", NULL};
+static const char *browser[] = {"firefox", NULL};
 static const char *fmanager[] = {"pcmanfm", NULL};
 static const char *nvim[] = {"st", "-e", "nvim", NULL};
+static const char *marktext[] = {"marktext", NULL};
 
 static const Key keys[] = {
     /* modifier                     key        function        argument */
@@ -84,6 +86,7 @@ static const Key keys[] = {
     {MODKEY, XK_b, spawn, {.v = browser}},
     {MODKEY, XK_e, spawn, {.v = fmanager}},
     {MODKEY, XK_n, spawn, {.v = nvim}},
+    {MODKEY, XK_m, spawn, {.v = marktext}},
     {MODKEY, XK_y, togglebar, {0}},
     {MODKEY, XK_j, focusstack, {.i = +1}},
     {MODKEY, XK_k, focusstack, {.i = -1}},
@@ -96,7 +99,7 @@ static const Key keys[] = {
     {MODKEY, XK_c, killclient, {0}},
     {MODKEY, XK_t, setlayout, {.v = &layouts[0]}},
     {MODKEY, XK_f, setlayout, {.v = &layouts[1]}},
-    {MODKEY, XK_m, setlayout, {.v = &layouts[2]}},
+    {MODKEY, XK_g, setlayout, {.v = &layouts[2]}},
     {MODKEY, XK_space, setlayout, {0}},
     {MODKEY | ShiftMask, XK_space, togglefloating, {0}},
     {MODKEY, XK_0, view, {.ui = ~0}},

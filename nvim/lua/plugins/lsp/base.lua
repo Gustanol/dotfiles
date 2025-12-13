@@ -21,14 +21,70 @@ return {
     dependencies = { "mason.nvim" },
     event = { "BufReadPre", "BufNewFile" },
     config = function()
-      require("mason-lspconfig").setup({
+      local mason_lspconfig = require("mason-lspconfig")
+
+      mason_lspconfig.setup({
         ensure_installed = {
-          "clangd", -- C/C++ Language Server
-          "lua_ls", -- Lua Language Server
-          "jsonls", -- JSON Language Server
-          "yamlls", -- YAML Language Server
+          "clangd",
+          "lua_ls",
         },
         automatic_installation = true,
+        handlers = {
+          -- Default handler
+          function(server_name)
+            require("lspconfig")[server_name].setup({
+              capabilities = _G.lsp_config.capabilities,
+              on_attach = _G.lsp_config.on_attach,
+            })
+          end,
+
+          -- Clangd handler
+          ["clangd"] = function()
+            require("lspconfig").clangd.setup({
+              capabilities = _G.lsp_config.capabilities,
+              on_attach = _G.lsp_config.on_attach,
+              cmd = {
+                "clangd",
+                "--query-driver=/usr/sbin/gcc,/usr/bin/gcc", -- match compile_commands.json
+                "--background-index",
+                "--clang-tidy",
+                "--header-insertion=iwyu",
+                "--completion-style=detailed",
+                "--function-arg-placeholders",
+                "--fallback-style=llvm",
+                "--log=verbose",
+              },
+              init_options = {
+                usePlaceholders = true,
+                completeUnimported = true,
+                clangdFileStatus = true,
+              },
+              filetypes = { "c", "h" },
+            })
+          end,
+
+          -- Lua_ls handler
+          ["lua_ls"] = function()
+            require("lspconfig").lua_ls.setup({
+              capabilities = _G.lsp_config.capabilities,
+              on_attach = _G.lsp_config.on_attach,
+              settings = {
+                Lua = {
+                  runtime = { version = "LuaJIT" },
+                  diagnostics = { globals = { "vim" } },
+                  workspace = {
+                    library = {
+                      [vim.fn.expand("$VIMRUNTIME/lua")] = true,
+                      [vim.fn.stdpath("config") .. "/lua"] = true,
+                    },
+                    checkThirdParty = false,
+                  },
+                  telemetry = { enable = false },
+                },
+              },
+            })
+          end,
+        },
       })
     end,
   },
@@ -42,7 +98,6 @@ return {
     },
     event = { "BufReadPre", "BufNewFile" },
     config = function()
-      local lspconfig = require("lspconfig")
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
       local capabilities = cmp_nvim_lsp.default_capabilities()
@@ -56,13 +111,9 @@ return {
           source = true,
           border = "rounded",
         },
-        signs = true,
         underline = true,
         update_in_insert = false,
         severity_sort = true,
-      })
-
-      vim.diagnostic.config({
         signs = {
           text = {
             [vim.diagnostic.severity.ERROR] = " ",
@@ -139,75 +190,10 @@ return {
         end
       end
 
-      lspconfig.clangd.setup({
+      _G.lsp_config = {
         capabilities = capabilities,
         on_attach = on_attach,
-        cmd = {
-          "clangd",
-          "--background-index",
-          "--clang-tidy",
-          "--header-insertion=iwyu",
-          "--completion-style=detailed",
-          "--function-arg-placeholders",
-          "--fallback-style=llvm",
-        },
-        init_options = {
-          usePlaceholders = true,
-          completeUnimported = true,
-          clangdFileStatus = true,
-        },
-        filetypes = { "c", "h", "cpp", "hpp", "objc", "objcpp", "cuda", "proto" },
-      })
-
-      lspconfig.jsonls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          json = {
-            schemas = require("schemastore").json.schemas(),
-            validate = { enable = true },
-          },
-        },
-      })
-
-      lspconfig.yamlls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          yaml = {
-            schemaStore = {
-              enable = false,
-              url = "",
-            },
-            schemas = require("schemastore").yaml.schemas(),
-          },
-        },
-      })
-
-      lspconfig.lua_ls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          Lua = {
-            runtime = {
-              version = "LuaJIT",
-            },
-            diagnostics = {
-              globals = { "vim" },
-            },
-            workspace = {
-              library = {
-                [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-                [vim.fn.stdpath("config") .. "/lua"] = true,
-              },
-              checkThirdParty = false,
-            },
-            telemetry = {
-              enable = false,
-            },
-          },
-        },
-      })
+      }
     end,
   },
 

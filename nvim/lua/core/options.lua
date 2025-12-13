@@ -6,7 +6,7 @@ g.mapleader = " "
 g.maplocalleader = "\\"
 
 -- Performance critical
-opt.updatetime = 50
+opt.updatetime = 500
 opt.timeoutlen = 200
 opt.ttimeoutlen = 0
 opt.lazyredraw = true
@@ -16,13 +16,6 @@ opt.ttyfast = true
 opt.maxmempattern = 20000
 opt.synmaxcol = 300
 opt.scrollback = 10000
-
--- Java specific
-g.java_highlight_all = 1
-g.java_highlight_debug = 1
-g.java_allow_cpp_keywords = 0
-g.java_space_errors = 1
-g.java_comment_strings = 1
 
 -- File handling
 opt.encoding = "utf-8"
@@ -40,16 +33,16 @@ opt.termguicolors = true
 opt.number = true
 opt.relativenumber = true
 opt.signcolumn = "yes:1"
-opt.cursorline = true
 opt.colorcolumn = "120"
 opt.wrap = false
 opt.scrolloff = 8
 opt.sidescrolloff = 8
 opt.pumheight = 15
+opt.cursorline = true
 
 -- Editing
-opt.tabstop = 4
-opt.shiftwidth = 4
+opt.tabstop = 2
+opt.shiftwidth = 2
 opt.expandtab = true
 opt.smartindent = true
 opt.breakindent = true

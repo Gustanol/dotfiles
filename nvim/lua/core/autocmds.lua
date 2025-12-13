@@ -28,7 +28,7 @@ local function change_dir(prompt_bufnr)
   actions.close(prompt_bufnr)
   if entry and entry.value then
     vim.cmd("cd " .. vim.fn.fnameescape(entry.value))
-    vim.cmd("Telescope file_browser")
+    vim.cmd("Telescope file_browser hidden=true")
   end
 end
 

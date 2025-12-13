@@ -11,6 +11,7 @@ vim.keymap.set("n", "<leader>cc", "<cmd>CCreateProject<cr>", { desc = "Create C 
 vim.keymap.set("n", "<leader>ci", "<cmd>AddIncludeGuard<cr>", { desc = "Add include guard" })
 vim.keymap.set("n", "<leader>ct", "<cmd>ToggleHeaderSource<cr>", { desc = "Toggle header source" })
 vim.keymap.set("n", "<leader>cm", "<cmd>MakeProject<cr>", { desc = "Make C project" })
+vim.api.nvim_set_keymap('n', '<Tab>', '<C-w>', { noremap = true, silent = true })
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "asm", "gas" },
