@@ -31,6 +31,7 @@ opt.undofile = false
 
 opt.termguicolors = true
 opt.number = true
+opt.mouse = "n"
 opt.relativenumber = true
 opt.signcolumn = "yes:1"
 opt.colorcolumn = "120"

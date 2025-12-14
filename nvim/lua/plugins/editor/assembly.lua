@@ -14,15 +14,6 @@ return {
   },
 
   {
-    "shirk/vim-gas",
-    ft = { "asm", "gas" },
-  },
-
-  {
-    "gpanders/editorconfig.nvim",
-  },
-
-  {
     "numToStr/Comment.nvim",
     config = function()
       require("Comment").setup({
