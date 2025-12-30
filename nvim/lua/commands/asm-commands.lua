@@ -3,20 +3,21 @@ local M = {}
 M.current_arch = "x86_64"
 
 M.syscalls_x64 = {
-  { num = 0, name = "sys_read", args = "unsigned int fd, char *buf, size_t count" },
+  { num = 0, name = "sys_read",  args = "unsigned int fd, char *buf, size_t count" },
   { num = 1, name = "sys_write", args = "unsigned int fd, const char *buf, size_t count" },
-  { num = 2, name = "sys_open", args = "const char *filename, int flags, umode_t mode" },
+  { num = 2, name = "sys_open",  args = "const char *filename, int flags, umode_t mode" },
   { num = 3, name = "sys_close", args = "unsigned int fd" },
-  { num = 4, name = "sys_stat", args = "unsigned int fd, struct stat *statbuf" },
+  { num = 4, name = "sys_stat",  args = "unsigned int fd, struct stat *statbuf" },
   { num = 5, name = "sys_fstat", args = "const char *filename, struct stat *statbuf" },
   {
     num = 9,
     name = "sys_mmap",
-    args = "unsigned long addr, unsigned long len, unsigned long prot, unsigned long flags, unsigned long fd, unsigned long off",
+    args =
+    "unsigned long addr, unsigned long len, unsigned long prot, unsigned long flags, unsigned long fd, unsigned long off",
   },
   { num = 11, name = "sys_mumap", args = "unsigned long addr, size_t len" },
-  { num = 60, name = "sys_exit", args = "int error_code" },
-  { num = 57, name = "sys_fork", args = "void" },
+  { num = 60, name = "sys_exit",  args = "int error_code" },
+  { num = 57, name = "sys_fork",  args = "void" },
   {
     num = 59,
     name = "sys_execve",
@@ -47,102 +48,6 @@ M.registers_x64 = {
     "ES, FS, GS - Extra segments",
   },
 }
-
-M.compile_gas = function()
-  local file = vim.fn.expand("%:p")
-  local name = vim.fn.expand("%:t:r")
-  local dir = vim.fn.expand("%:p:h")
-
-  local content = table.concat(vim.api.nvim_buf_get_lines(0, 0, 20, false), "\n")
-  local is_32bit = content:match("%.code32") or content:match("%%eax")
-
-  local obj_file = dir .. "/" .. name .. ".o"
-  local out_file = dir .. "/" .. name
-
-  local as_cmd
-  local ld_cmd
-
-  if is_32bit then
-    as_cmd = string.format("as --32 %s -o %s", file, obj_file)
-    ld_cmd = string.format("ld -m elf_i386 %s -o %s", obj_file, out_file)
-  else
-    as_cmd = string.format("as %s -o %s", file, obj_file)
-    ld_cmd = string.format("ld %s -o %s", obj_file, out_file)
-  end
-
-  vim.notify("Compiling with GAS...", vim.log.levels.INFO)
-
-  local as_result = vim.fn.system(as_cmd)
-  if vim.v.shell_error ~= 0 then
-    vim.notify("Error with AS:\n" .. as_result, vim.log.levels.ERROR)
-    return false
-  end
-
-  local ld_result = vim.fn.system(ld_cmd)
-  if vim.v.shell_error ~= 0 then
-    vim.notify("Error with LD:\n" .. ld_result, vim.log.levels.ERROR)
-    return false
-  end
-
-  vim.fn.delete(obj_file)
-
-  vim.notify("✓ Compilation well-done: " .. out_file, vim.log.levels.INFO)
-  return true, out_file
-end
-
-M.compile_and_run = function()
-  local success, out_file = M.compile_gas()
-  if success then
-    vim.cmd("split | terminal " .. out_file)
-  end
-end
-
-M.compile_and_debug = function()
-  local file = vim.fn.expand("%:p")
-  local name = vim.fn.expand("%:t:r")
-  local dir = vim.fn.expand("%:p:h")
-
-  local content = table.concat(vim.api.nvim_buf_get_lines(0, 0, 20, false), "\n")
-  local is_32bit = content:match("%.code32") or content:match("%%eax")
-
-  local obj_file = dir .. "/" .. name .. ".o"
-  local out_file = dir .. "/" .. name
-
-  local as_cmd
-  local ld_cmd
-
-  if is_32bit then
-    as_cmd = string.format("as --32 -g %s -o %s", file, obj_file)
-    ld_cmd = string.format("ld -m elf_i386 %s -o %s", obj_file, out_file)
-  else
-    as_cmd = string.format("as -g %s -o %s", file, obj_file)
-    ld_cmd = string.format("ld %s -o %s", obj_file, out_file)
-  end
-
-  vim.notify("Compiling (debug)...", vim.log.levels.INFO)
-
-  vim.fn.system(as_cmd)
-  if vim.v.shell_error ~= 0 then
-    vim.notify("Error compiling", vim.log.levels.ERROR)
-    return
-  end
-
-  vim.fn.system(ld_cmd)
-  if vim.v.shell_error ~= 0 then
-    vim.notify("Error linking", vim.log.levels.ERROR)
-    return
-  end
-
-  vim.fn.delete(obj_file)
-
-  require("dap").run({
-    type = "gdb",
-    request = "launch",
-    name = "Debug Assembly",
-    program = out_file,
-    cwd = dir,
-  })
-end
 
 M.show_syscalls = function()
   local lines = { "=== Linux x86_64 Syscalls ===" }

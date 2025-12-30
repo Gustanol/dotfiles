@@ -1,6 +1,6 @@
 local lsp = require("lsp.config")
 
-require("lspconfig").clangd.setup({
+vim.lsp.config("clangd", {
   capabilities = lsp.capabilities,
   on_attach = lsp.on_attach,
 
@@ -24,3 +24,5 @@ require("lspconfig").clangd.setup({
 
   filetypes = { "c", "h", "cpp", "objc", "objcpp" },
 })
+
+vim.lsp.enable("clangd")

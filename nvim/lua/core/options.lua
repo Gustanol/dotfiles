@@ -1,5 +1,6 @@
 local opt = vim.opt
 local g = vim.g
+vim.o.winborder = 'rounded'
 
 -- Leader keys
 g.mapleader = " "
@@ -32,6 +33,7 @@ opt.undofile = false
 opt.termguicolors = true
 opt.number = true
 opt.mouse = "n"
+vim.opt.mousemodel = "extend"
 opt.relativenumber = true
 opt.signcolumn = "yes:1"
 opt.colorcolumn = "120"

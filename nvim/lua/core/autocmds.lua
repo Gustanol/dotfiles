@@ -68,10 +68,6 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
 })
 
 ------------------------------------------- Assembly commands
-vim.api.nvim_create_user_command("AsmCompile", asm.compile_gas, {})
-vim.api.nvim_create_user_command("AsmRun", asm.compile_and_run, {})
-vim.api.nvim_create_user_command("AsmDebug", asm.compile_and_debug, {})
-
 vim.api.nvim_create_user_command("AsmSyscalls", asm.show_syscalls, {})
 vim.api.nvim_create_user_command("AsmRegisters", asm.show_registers, {})
 
@@ -106,22 +102,6 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.wo.colorcolumn = "80"
 
     vim.cmd([[match ExtraWhitespace /\s\+$/]])
-  end,
-  group = asm_group,
-})
-
-vim.api.nvim_create_autocmd("DirChanged", {
-  callback = function()
-    local makefile = vim.fn.findfile("Makefile", ".;")
-    if makefile ~= "" then
-      local content = vim.fn.readfile(makefile)
-      for _, line in ipairs(content) do
-        if line:match("%.s") then
-          vim.notify("📁 Assembly project detected (GAS)", vim.log.levels.INFO)
-          break
-        end
-      end
-    end
   end,
   group = asm_group,
 })

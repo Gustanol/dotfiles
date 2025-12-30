@@ -65,7 +65,6 @@ return {
             [vim.diagnostic.severity.INFO] = "DiagnosticSignInfoInfo",
             [vim.diagnostic.severity.HINT] = "DiagnosticSignHintHint",
           },
-          -- linehl = { ... },
         },
       })
     end,

@@ -20,69 +20,6 @@ vim.api.nvim_create_autocmd("FileType", {
 
     vim.keymap.set(
       "n",
-      "<leader>ac",
-      "<cmd>AsmCompile<cr>",
-      vim.tbl_extend("force", opts, { desc = "Assembly: Compilar" })
-    )
-
-    vim.keymap.set(
-      "n",
-      "<leader>ar",
-      "<cmd>AsmRun<cr>",
-      vim.tbl_extend("force", opts, { desc = "Assembly: Executar" })
-    )
-
-    vim.keymap.set(
-      "n",
-      "<leader>ad",
-      "<cmd>AsmDebug<cr>",
-      vim.tbl_extend("force", opts, { desc = "Assembly: Debug" })
-    )
-
-    vim.keymap.set(
-      "n",
-      "<leader>ab",
-      "<cmd>lua require('dap').toggle_breakpoint()<cr>",
-      vim.tbl_extend("force", opts, { desc = "Assembly: Toggle Breakpoint" })
-    )
-
-    vim.keymap.set(
-      "n",
-      "<leader>aB",
-      "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Condition: '))<cr>",
-      vim.tbl_extend("force", opts, { desc = "Assembly: Conditional breakpoint" })
-    )
-
-    vim.keymap.set(
-      "n",
-      "<F5>",
-      "<cmd>lua require('dap').continue()<cr>",
-      vim.tbl_extend("force", opts, { desc = "Debug: Continue" })
-    )
-
-    vim.keymap.set(
-      "n",
-      "<F10>",
-      "<cmd>lua require('dap').step_over()<cr>",
-      vim.tbl_extend("force", opts, { desc = "Debug: Step Over" })
-    )
-
-    vim.keymap.set(
-      "n",
-      "<F11>",
-      "<cmd>lua require('dap').step_into()<cr>",
-      vim.tbl_extend("force", opts, { desc = "Debug: Step Into" })
-    )
-
-    vim.keymap.set(
-      "n",
-      "<F12>",
-      "<cmd>lua require('dap').step_out()<cr>",
-      vim.tbl_extend("force", opts, { desc = "Debug: Step Out" })
-    )
-
-    vim.keymap.set(
-      "n",
       "<leader>as",
       "<cmd>AsmSyscalls<cr>",
       vim.tbl_extend("force", opts, { desc = "Assembly: Syscalls" })

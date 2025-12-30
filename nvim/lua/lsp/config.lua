@@ -17,10 +17,19 @@ function M.on_attach(client, bufnr)
   map("<leader>lgr", vim.lsp.buf.references, "Go to references")
   map("<leader>lgt", vim.lsp.buf.type_definition, "Go to type definition")
 
-  map("K", vim.lsp.buf.hover, "Info")
+  map("K", function()
+    vim.lsp.buf.hover {
+      border = "single",
+      max_width = 120,
+      max_height = 25,
+      title_pos = "left",
+    }
+  end, "Info")
   map("<C-k>", vim.lsp.buf.signature_help, "Help")
 
-  map("<leader>lca", vim.lsp.buf.code_action, "Code actions")
+  map("<leader>lca", function()
+    vim.lsp.buf.code_action({ apply = true })
+  end, "Code actions")
   map("<leader>lrn", vim.lsp.buf.rename, "Rename")
   map("<leader>lf", function()
     vim.lsp.buf.format({ async = true })
