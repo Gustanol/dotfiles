@@ -7,4 +7,5 @@ return {
   require("plugins.editor.notify.nvimnotify"),
   require("plugins.editor.assembly"),
   require("plugins.editor.snippets.asm-snippets"),
+  require("plugins.editor.header-completion"),
 }

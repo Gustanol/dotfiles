@@ -4,6 +4,8 @@ local c_generator = require("commands.c-generator")
 local asm = require("commands.asm-commands")
 local asm_cheatsheet = require("commands.asm-cheatsheet")
 local asm_group = vim.api.nvim_create_augroup("AssemblyConfig", { clear = true })
+local project_setup = require("commands.project-setup")
+local ccls_commands = require("commands.ccls-commands")
 
 -------------------------------------------- C commands
 vim.api.nvim_create_user_command("CCreateProject", function()
@@ -21,6 +23,17 @@ end, { desc = "Toggle header source" })
 vim.api.nvim_create_user_command("MakeProject", function()
   c_generator.make_project()
 end, { desc = "Make project" })
+
+-- Register commands
+vim.api.nvim_create_user_command("ProjectSetup", project_setup.create_project_config, {})
+vim.api.nvim_create_user_command("ProjectShow", project_setup.show_project_config, {})
+vim.api.nvim_create_user_command("ProjectEdit", project_setup.edit_project_config, {})
+
+vim.api.nvim_create_user_command("CclsOptimize", ccls_commands.optimize, {})
+vim.api.nvim_create_user_command("CclsPause", ccls_commands.pause_indexing, {})
+vim.api.nvim_create_user_command("CclsResume", ccls_commands.resume_indexing, {})
+vim.api.nvim_create_user_command("CclsClearCache", ccls_commands.clear_cache, {})
+vim.api.nvim_create_user_command("CclsStatus", ccls_commands.show_status, {})
 -------------------------------------------- C commands
 
 local function change_dir(prompt_bufnr)
@@ -81,6 +94,7 @@ vim.keymap.set(
   "<cmd>AsmCheatsheet<cr>",
   { noremap = true, silent = true, desc = "Assembly: Cheatsheet" }
 )
+
 ------------------------------------------ Assembly commands
 
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {

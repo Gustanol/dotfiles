@@ -14,7 +14,6 @@ return {
       { "<leader>lw", group = "Workspace keymaps" },
       { "<leader>lc", group = "Code keymaps" },
       { "<leader>c",  group = "C keymaps" },
-      { "<leader>j",  group = "Java keymaps" },
       { "<leader>m",  group = "Markdown keymaps" },
     },
   },

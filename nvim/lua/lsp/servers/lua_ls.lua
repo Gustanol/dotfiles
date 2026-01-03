@@ -17,6 +17,7 @@ vim.lsp.config("lua_ls", {
       telemetry = { enable = false },
     },
   },
+  filetypes = { "lua" },
 })
 
 vim.lsp.enable("lua_ls")

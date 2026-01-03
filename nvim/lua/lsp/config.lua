@@ -21,7 +21,7 @@ function M.on_attach(client, bufnr)
     vim.lsp.buf.hover {
       border = "single",
       max_width = 120,
-      max_height = 25,
+      max_height = 30,
       title_pos = "left",
     }
   end, "Info")

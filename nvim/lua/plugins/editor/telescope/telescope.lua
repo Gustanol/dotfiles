@@ -9,19 +9,17 @@ return {
   },
   cmd = "Telescope",
   config = function()
-    local telescope =
-        require("telescope")
-    telescope
-        .setup({
-          defaults =
-          {
-            file_ignore_patterns = { "node_modules", ".git" },
-          },
-          extensions =
-          {
-            file_browser = {},
-          },
-        })
+    local telescope = require("telescope")
+
+    telescope.setup({
+      defaults = {
+        file_ignore_patterns = { "node_modules", ".git" },
+      },
+      extensions = {
+        file_browser = {},
+      },
+    })
+
     telescope.load_extension("file_browser")
     telescope.load_extension("fzf")
   end,

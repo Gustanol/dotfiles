@@ -22,11 +22,11 @@ return {
     event = { "BufReadPre", "BufNewFile" },
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "clangd", "lua_ls" },
+        ensure_installed = { "lua_ls" },
         automatic_enable = false,
       })
 
-      require("lsp.servers.clangd")
+      require("lsp.servers.ccls")
       require("lsp.servers.lua_ls")
     end,
   },

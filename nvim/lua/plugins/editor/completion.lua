@@ -16,12 +16,47 @@ return {
       local cmp = require("cmp")
       local luasnip = require("luasnip")
       local lspkind = require("lspkind")
+      local lspkind_format = lspkind.cmp_format({
+        maxwidth = 50,
+        ellipsis_char = "...",
+        show_labelDetails = true,
+        symbol_map = {
+          Class = " ",
+          Interface = " ",
+          Enum = " ",
+          EnumMember = " ",
+          Method = " ",
+          Function = "󰊕 ",
+          Constructor = "󰣪 ",
+          Field = " ",
+          Variable = " ",
+          Property = " ",
+          Struct = " ",
+          Union = "󰕤 ",
+          TypeParameter = " ",
+          Text = " ",
+          Snippet = " ",
+          Keyword = " ",
+          Reference = "📎",
+          Folder = " ",
+          File = " ",
+        },
+      })
 
       require("luasnip.loaders.from_vscode").lazy_load()
 
       cmp.setup({
+        performance = {
+          debounce = 150,         -- Wait 150ms before triggering (was default 60ms)
+          throttle = 60,          -- Throttle completions
+          fetching_timeout = 200, -- Timeout faster
+          max_view_entries = 50,  -- Limit visible entries
+        },
         completion = {
-          completeopt = "menu,menuone,preview,noselect",
+          keyword_length = 2, -- Only trigger after 2 characters
+          autocomplete = {
+            cmp.TriggerEvent.TextChanged,
+          },
         },
         snippet = {
           expand = function(args)
@@ -55,40 +90,69 @@ return {
             end
           end, { "i", "s" }),
         }),
-        sources = {
-          { name = "nvim_lsp", priority = 1000 },                    -- LSP
-          { name = "luasnip",  priority = 750 },                     -- snippets
-          { name = "nvim_lua", priority = 700 },                     -- lua api
-          { name = "buffer",   priority = 500, keyword_length = 3 }, -- text within current buffer
-          { name = "path",     priority = 250 },                     -- file system paths
-        },
+        sources = cmp.config.sources({
+          {
+            name = "nvim_lsp",
+            max_item_count = 30, -- Limit LSP items to reduce processing
+            priority = 1000,
+            entry_filter = function(entry)
+              -- Filter out very long completion items that cause CPU spikes
+              local kind = entry:get_kind()
+              local item = entry:get_completion_item()
+
+              -- Skip items with excessively long labels/details
+              if item.label and #item.label > 60 then
+                return false
+              end
+
+              return true
+            end,
+          },
+          {
+            name = "path",
+            max_item_count = 10,
+            priority = 500,
+          },
+          {
+            name = "buffer",
+            max_item_count = 10,
+            priority = 250,
+            keyword_length = 3,
+          },
+        }),
         formatting = {
-          format = lspkind.cmp_format({
-            maxwidth = 50,
-            ellipsis_char = "...",
-            show_labelDetails = true,
-            symbol_map = {
-              Class = " ",
-              Interface = " ",
-              Enum = " ",
-              EnumMember = " ",
-              Method = " ",
-              Function = "󰊕 ",
-              Constructor = "󰣪 ",
-              Field = " ",
-              Variable = " ",
-              Property = " ",
-              Struct = " ",
-              Union = "󰕤 ",
-              TypeParameter = " ",
-              Text = " ",
-              Snippet = " ",
-              Keyword = " ",
-              Reference = "📎",
-              Folder = " ",
-              File = " ",
-            },
-          }),
+          format = function(entry, vim_item)
+            -- first apply the normal lspkind formatting
+            vim_item = lspkind_format(entry, vim_item)
+
+            -- Now override menu labels
+            vim_item.menu = ({
+              nvim_lsp = "[LSP]",
+              buffer = "[BUF]",
+              path = "[PATH]",
+            })[entry.source.name]
+
+            -- If from LSP, try to extract header info
+            if entry.source.name == "nvim_lsp" then
+              local item = entry:get_completion_item()
+              if item.detail then
+                -- match something like: #include "foo.h" or <foo.hpp>
+                local header = item.detail:match('#include ["<]([^">]+)[">]')
+                if header then
+                  vim_item.menu = "[" .. header .. "]"
+                else
+                  -- fallback if detail contains .h/.hpp
+                  local short = item.detail:match("([^/]+%.h[^/]*)$")
+                      or item.detail:match("([^/]+%.hpp[^/]*)$")
+                  if short then
+                    vim_item.menu = "[" .. short .. "]"
+                  end
+                end
+              end
+            end
+
+            return vim_item
+          end,
         },
         window = {
           completion = cmp.config.window.bordered({
