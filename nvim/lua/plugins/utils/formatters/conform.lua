@@ -6,8 +6,8 @@ return {
 
     conform.setup({
       formatters_by_ft = {
-        c = { "clangd" },
-        cpp = { "clangd" },
+        c = { "clang-format" },
+        cpp = { "clang-format" },
 
         lua = { "lua-language-server" },
 

@@ -105,3 +105,38 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
   group = asm_group,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    require("commands.markdown-commands")
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.keymap.set("n", "]]", "/^#\\+<CR>", { buffer = true, desc = "Next heading" })
+    vim.keymap.set("n", "[[", "?^#\\+<CR>", { buffer = true, desc = "Previous heading" })
+
+    vim.keymap.set("n", "<leader>mc", function()
+      local line = vim.api.nvim_get_current_line()
+      local new_line
+      if line:match("^%s*- %[ %]") then
+        new_line = line:gsub("^(%s*- )%[ %]", "%1[x]")
+      elseif line:match("^%s*- %[x%]") then
+        new_line = line:gsub("^(%s*- )%[x%]", "%1[ ]")
+      else
+        new_line = line:gsub("^(%s*- )", "%1[ ] ")
+      end
+      vim.api.nvim_set_current_line(new_line)
+    end, { buffer = true, desc = "Toggle checkbox" })
+  end,
+})
+
+vim.keymap.set("n", "<leader>tN", function()
+  require("telescope.builtin").find_files({
+    prompt_title = "Find Note Files",
+    cwd = "~/notes",
+  })
+end, { desc = "Find note files" })

@@ -20,6 +20,8 @@ M.show_cheatsheet = function()
   rax=3   close   (rdi=fd)
   rax=60  exit    (rdi=status)
 
+  See more with <leader>as
+
 [ REGISTERS ]
   %rax - Acumulator, syscall number, return
   %rbx - Base
@@ -41,16 +43,17 @@ M.show_cheatsheet = function()
     7. %r9
 
 [ COMMON INSTRUCTIONS ]
-  movq %src, %dst   - Cut/copy
-  addq %src, %dst   - Add
-  subq %src, %dst   - Sub
-  mulq %src         - Multiply (%rax * src)
-  divq %src         - Divide (%rax / src)
-  incq %dst         - Increments
-  decq %dst         - Decrements
-  pushq %src
-  popq %dst
+  mov %src, %dst   - Mov %src value to %dst
+  add %src, %dst   - Add
+  sub %src, %dst   - Sub
+  mul %src         - Multiply (%rax * src)
+  div %src         - Divide (%rax / src)
+  inc %dst         - Increments
+  dec %dst         - Decrements
+  push %src        - Add a value to stack memory
+  pop %dst         - Remove the least added value from stack memory
   call label        - Call function
+  jmp labla         - Jump to label
   ret               - Return
   syscall           - Call the syscall
 
@@ -77,8 +80,8 @@ M.show_cheatsheet = function()
   8(%rax,%rbx,4)   - [rax+rbx*4+8]
 
 [ COMPARISONS ]
-  cmpq %b, %a      - Compare (a - b)
-  testq %b, %a     - Test bits (a & b)
+  cmp %b, %a      - Compare (a - b)
+  test %b, %a     - Test bits (a & b)
 
 [ DIRECTIVES ]
   .section .text  - Code section
@@ -100,27 +103,11 @@ M.show_cheatsheet = function()
 [ KEYMAPS ]
   <leader>ac  - Compile
   <leader>ar  - Execute
-  <leader>ad  - Debug
-  <leader>ab  - Toggle breakpoint
-  <F5>        - Continue debug
-  <F10>       - Step over
-  <F11>       - Step into
-  <F12>       - Step out
   <leader>as  - Show syscalls
   <leader>ag  - Show registers
   <leader>at  - Generate template
   <leader>ay  - Look for symbols
   <leader>an  - New project
-
-[ COMMANDS ]
-  :AsmCompile     - Compile current file
-  :AsmRun         - Compile and execute
-  :AsmDebug       - Compile and debug
-  :AsmSyscalls    - Show syscalls
-  :AsmRegisters   - Show registers
-  :AsmTemplate    - Generate template
-  :AsmSymbols     - Look for symbols
-  :AsmNewProject  - New project
 
 Press 'q' or <Esc> to close
 ]]

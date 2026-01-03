@@ -9,6 +9,7 @@ M.syscalls_x64 = {
   { num = 3, name = "sys_close", args = "unsigned int fd" },
   { num = 4, name = "sys_stat",  args = "unsigned int fd, struct stat *statbuf" },
   { num = 5, name = "sys_fstat", args = "const char *filename, struct stat *statbuf" },
+  { num = 6, name = "sys_lstat", args = "const char *filename, struct stat *statbuf" },
   {
     num = 9,
     name = "sys_mmap",
@@ -117,7 +118,7 @@ M.show_registers = function()
     row = (vim.o.lines - height) / 2,
     style = "minimal",
     border = "rounded",
-    title = " Registradores ",
+    title = " Registers ",
     title_pos = "center",
   })
 
@@ -126,13 +127,13 @@ M.show_registers = function()
 end
 
 M.create_project = function()
-  local project_name = vim.fn.input("Peoject name: ")
+  local project_name = vim.fn.input("Project name: ")
   if project_name == "" then
     vim.notify("Invalid name", vim.log.levels.ERROR)
     return
   end
 
-  local arch = vim.fn.input("Architeture (32/64): ", "64")
+  local arch = vim.fn.input("Architecture (32/64): ", "64")
   local project_dir = vim.fn.getcwd() .. "/" .. project_name
 
   vim.fn.mkdir(project_dir, "p")
@@ -261,12 +262,13 @@ Thumbs.db
 
 ### Project structure
 
+```plaintext
 %s/
 ├── src/           # Source files (.s)
 ├── build/         # Build artifacts
 ├── Makefile       # Build configuration
 └── README.md      # This file
-
+```
 
 ### How to run this?
 Build

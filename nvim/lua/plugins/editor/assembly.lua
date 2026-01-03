@@ -1,52 +1,27 @@
 return {
   {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      opts.ensure_installed = opts.ensure_installed or {}
-      vim.list_extend(opts.ensure_installed, {
-        "asm",
-        "make",
-      })
-
-      opts.highlight = opts.highlight or {}
-      opts.highlight.additional_vim_regex_highlighting = { "asm", "gas" }
-    end,
+    "shirk/vim-gas",
+    ft = { "asm", "s", "S" },
   },
 
   {
-    "numToStr/Comment.nvim",
+    "https://github.com/Shirk/vim-gas",
     config = function()
-      require("Comment").setup({
-        pre_hook = function()
-          if vim.bo.filetype == "gas" or vim.bo.filetype == "asm" then
-            return "# %s"
-          end
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "asm", "s", "S" },
+        callback = function()
+          vim.opt_local.expandtab = false
+          vim.opt_local.tabstop = 8
+          vim.opt_local.shiftwidth = 8
+          vim.opt_local.commentstring = "# %s"
+
+          vim.opt_local.path:append("./include")
+          vim.opt_local.path:append("./arch/x86/include")
+
+          vim.opt_local.include = [[^\s*\.include]]
+          vim.opt_local.define = [[^\s*\.macro]]
         end,
       })
     end,
-  },
-
-  {
-    "folke/todo-comments.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    opts = {
-      keywords = {
-        FIX = { icon = " ", color = "error", alt = { "FIXME", "BUG" } },
-        TODO = { icon = " ", color = "info" },
-        HACK = { icon = " ", color = "warning" },
-        WARN = { icon = " ", color = "warning", alt = { "WARNING" } },
-        PERF = { icon = " ", color = "default", alt = { "OPTIM", "OPTIMIZE" } },
-        NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
-      },
-    },
-  },
-
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    main = "ibl",
-    opts = {
-      indent = { char = "│" },
-      scope = { enabled = false },
-    },
   },
 }

@@ -1,5 +1,6 @@
 return {
   require("plugins.editor.treesitter"),
+  require("plugins.editor.markdown"),
   require("plugins.editor.telescope.telescope"),
   require("plugins.editor.telescope.asm-telescope"),
   require("plugins.editor.completion"),

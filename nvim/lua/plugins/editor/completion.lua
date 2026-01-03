@@ -3,14 +3,14 @@ return {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     dependencies = {
-      "hrsh7th/cmp-buffer", -- source for text in buffer
-      "hrsh7th/cmp-path", -- source for file system paths
-      "hrsh7th/cmp-nvim-lsp", -- source for LSP
-      "hrsh7th/cmp-nvim-lua", -- source for Lua API
-      "hrsh7th/cmp-cmdline", -- source for command line
-      "saadparwaiz1/cmp_luasnip", -- for autocompletion
+      "hrsh7th/cmp-buffer",           -- source for text in buffer
+      "hrsh7th/cmp-path",             -- source for file system paths
+      "hrsh7th/cmp-nvim-lsp",         -- source for LSP
+      "hrsh7th/cmp-nvim-lua",         -- source for Lua API
+      "hrsh7th/cmp-cmdline",          -- source for command line
+      "saadparwaiz1/cmp_luasnip",     -- for autocompletion
       "rafamadriz/friendly-snippets", -- useful snippets
-      "onsails/lspkind.nvim", -- vs-code like pictograms
+      "onsails/lspkind.nvim",         -- vs-code like pictograms
     },
     config = function()
       local cmp = require("cmp")
@@ -34,7 +34,7 @@ return {
           ["<C-b>"] = cmp.mapping.scroll_docs(-4),
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
-          ["<C-e>"] = cmp.mapping.abort(), -- close completion window
+          ["<C-e>"] = cmp.mapping.abort(),        -- close completion window
           ["<CR>"] = cmp.mapping.confirm({ select = false }),
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
@@ -55,38 +55,38 @@ return {
             end
           end, { "i", "s" }),
         }),
-        sources = cmp.config.sources({
-          { name = "nvim_lsp", priority = 1000 }, -- LSP
-          { name = "luasnip", priority = 750 }, -- snippets
-          { name = "nvim_lua", priority = 700 }, -- lua api
-          { name = "buffer", priority = 500, keyword_length = 3 }, -- text within current buffer
-          { name = "path", priority = 250 }, -- file system paths
-        }),
+        sources = {
+          { name = "nvim_lsp", priority = 1000 },                    -- LSP
+          { name = "luasnip",  priority = 750 },                     -- snippets
+          { name = "nvim_lua", priority = 700 },                     -- lua api
+          { name = "buffer",   priority = 500, keyword_length = 3 }, -- text within current buffer
+          { name = "path",     priority = 250 },                     -- file system paths
+        },
         formatting = {
           format = lspkind.cmp_format({
             maxwidth = 50,
             ellipsis_char = "...",
             show_labelDetails = true,
             symbol_map = {
-              Class = " ",
-              Interface = "🔌",
-              Enum = "📋",
-              EnumMember = "🔖",
-              Method = "⚡",
+              Class = " ",
+              Interface = " ",
+              Enum = " ",
+              EnumMember = " ",
+              Method = " ",
               Function = "󰊕 ",
-              Constructor = "🔨",
-              Field = "📝",
-              Variable = "📦",
-              Property = "🏠",
+              Constructor = "󰣪 ",
+              Field = " ",
+              Variable = " ",
+              Property = " ",
               Struct = " ",
-              Union = "🤝",
-              TypeParameter = "🎭",
-              Text = "📄",
-              Snippet = " ",
-              Keyword = "🔑",
+              Union = "󰕤 ",
+              TypeParameter = " ",
+              Text = " ",
+              Snippet = " ",
+              Keyword = " ",
               Reference = "📎",
-              Folder = "📁",
-              File = "📄",
+              Folder = " ",
+              File = " ",
             },
           }),
         },
@@ -103,20 +103,12 @@ return {
         experimental = {
           ghost_text = true,
         },
-        cmp.setup.filetype({ "java" }, {
-          sources = cmp.config.sources({
-            { name = "nvim_lsp", priority = 1000 },
-            { name = "luasnip", priority = 750 },
-            { name = "buffer", priority = 500, keyword_length = 4 },
-            { name = "path", priority = 250 },
-          }),
-        }),
         cmp.setup.filetype({ "c", "cpp" }, {
           sources = cmp.config.sources({
             { name = "nvim_lsp", priority = 1000 },
-            { name = "luasnip", priority = 750 },
-            { name = "buffer", priority = 500, keyword_length = 3 },
-            { name = "path", priority = 250 },
+            { name = "luasnip",  priority = 750 },
+            { name = "buffer",   priority = 500, keyword_length = 3 },
+            { name = "path",     priority = 250 },
           }),
         }),
       })
