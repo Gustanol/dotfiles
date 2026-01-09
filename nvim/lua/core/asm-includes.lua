@@ -1,152 +1,44 @@
 local M = {}
-local project_config = require("core.project-config")
 
--- Get kernel headers path
-local function get_kernel_headers_path()
-  local kernel_release = vim.fn.system("uname -r"):gsub("\n", "")
-  local paths = {
-    "~/qemu-lab/linux-6.17.8/",
-    "/lib/modules/" .. kernel_release .. "/build",
-    "/usr/src/linux-headers-" .. kernel_release,
-    "/usr/src/kernels/" .. kernel_release,
-  }
+-- Get project include directories based on .nvim-project.json
+M.get_project_includes = function()
+  local project_config = require("core.project-config")
+  local config, config_dir = project_config.get_buffer_config()
 
-  for _, path in ipairs(paths) do
-    if vim.fn.isdirectory(path) == 1 then
-      return path
-    end
-  end
-
-  return nil
-end
-
--- Extract include paths from Makefile with variable expansion
-local function get_makefile_includes()
-  local makefile = vim.fn.getcwd() .. "/Makefile"
-  if vim.fn.filereadable(makefile) == 0 then
+  if not config or not config_dir then
     return {}
   end
 
   local includes = {}
-  local variables = {}
-  local content = vim.fn.readfile(makefile)
 
-  -- First pass: collect variable definitions
-  for _, line in ipairs(content) do
-    line = line:gsub("#.*$", "")
-    local var_name, var_value = line:match("^([%w_]+)%s*[:=]%s*(.+)$")
-    if var_name and var_value then
-      variables[var_name] = var_value:gsub("%s+$", "")
-    end
-  end
-
-  -- Function to expand variables
-  local function expand_vars(str, depth)
-    if depth > 10 then return str end
-
-    local expanded = str:gsub("%$%(([%w_]+)%)", function(var)
-      return variables[var] or ""
-    end)
-
-    expanded = expanded:gsub("%${([%w_]+)}", function(var)
-      return variables[var] or ""
-    end)
-
-    if expanded:match("%$[%({]") then
-      return expand_vars(expanded, depth + 1)
-    end
-
-    return expanded
-  end
-
-  -- Second pass: find -I flags
-  for _, line in ipairs(content) do
-    line = line:gsub("#.*$", "")
-    line = expand_vars(line, 0)
-
-    for flag in line:gmatch("-I%s*([^%s]+)") do
-      local path = flag
-
-      if not vim.startswith(path, "/") then
-        path = vim.fn.getcwd() .. "/" .. path
-      end
-
-      path = vim.fn.resolve(path)
-
-      if vim.fn.isdirectory(path) == 1 then
-        table.insert(includes, path)
-      end
-    end
-  end
-
-  -- Remove duplicates
-  local seen = {}
-  local unique_includes = {}
-  for _, inc in ipairs(includes) do
-    if not seen[inc] then
-      seen[inc] = true
-      table.insert(unique_includes, inc)
-    end
-  end
-
-  return unique_includes
-end
-
--- Get project include directories based on config
-M.get_project_includes = function()
-  local includes = {}
-  local cwd = vim.fn.getcwd()
-  local config = project_config.read_config()
-  local project_type = config and config.project_type or "userspace"
-
-  if project_type == "linux_kernel" then
-    local dirs = {
-      cwd .. "/include",
-      cwd .. "/arch/x86/include",
-      cwd .. "/arch/x86/include/generated",
-    }
-    for _, dir in ipairs(dirs) do
-      if vim.fn.isdirectory(dir) == 1 then
-        table.insert(includes, dir)
-      end
-    end
-  elseif project_type == "kernel_module" then
-    local kernel_headers = get_kernel_headers_path()
-    if kernel_headers then
+  if config.project_type == "linux_kernel" then
+    table.insert(includes, config_dir .. "/include")
+    table.insert(includes, config_dir .. "/arch/x86/include")
+    table.insert(includes, config_dir .. "/arch/x86/include/generated")
+  elseif config.project_type == "linux_module" then
+    local kernel_headers = "~/qemu-lab/linux-6.17.8/"
+    if vim.fn.isdirectory(kernel_headers) == 1 then
       table.insert(includes, kernel_headers .. "/include")
       table.insert(includes, kernel_headers .. "/arch/x86/include")
-      table.insert(includes, kernel_headers .. "/arch/x86/include/generated")
     end
-  elseif project_type == "makefile_based" then
-    includes = get_makefile_includes()
+  elseif config.project_type == "custom" then
+    -- For custom projects, scan for include directories
+    if vim.fn.isdirectory(config_dir .. "/include") == 1 then
+      table.insert(includes, config_dir .. "/include")
+    end
+    if vim.fn.isdirectory(config_dir .. "/arch/x86/include") == 1 then
+      table.insert(includes, config_dir .. "/arch/x86/include")
+    end
   end
 
   return includes
 end
 
--- Setup assembly file includes
-M.setup = function()
-  vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "asm", "s", "S" },
-    callback = function()
-      local includes = M.get_project_includes()
-
-      vim.opt_local.path = vim.opt_local.path + includes
-      vim.opt_local.includeexpr = [[v:lua.require('core.asm-includes').resolve_include(v:fname)]]
-      vim.opt_local.include = [[^\s*#\s*include]]
-
-      vim.opt_local.expandtab = false
-      vim.opt_local.tabstop = 8
-      vim.opt_local.shiftwidth = 8
-      vim.opt_local.commentstring = "# %s"
-    end,
-  })
-end
-
--- Resolve include paths
+-- Resolve include path for gf command
 M.resolve_include = function(fname)
-  local clean_fname = fname:gsub("^<", ""):gsub(">$", "")
+  local clean_fname = fname:gsub("^<", ""):gsub(">$", ""):gsub("^\"", ""):gsub("\"$", "")
 
+  -- Try project includes first
   local includes = M.get_project_includes()
   for _, include_dir in ipairs(includes) do
     local full_path = include_dir .. "/" .. clean_fname
@@ -155,7 +47,36 @@ M.resolve_include = function(fname)
     end
   end
 
+  -- Fallback to relative path
   return clean_fname
+end
+
+-- Setup assembly file settings
+M.setup = function()
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "asm", "nasm", "gas" },
+    callback = function(ev)
+      local includes = M.get_project_includes()
+
+      -- Set include paths for gf
+      vim.opt_local.path = vim.opt_local.path + includes
+      vim.opt_local.includeexpr = [[v:lua.require('core.asm-includes').resolve_include(v:fname)]]
+
+      -- Match #include and .include directives
+      vim.opt_local.include = [[^\s*\(#\s*include\|\.include\)]]
+
+      -- Assembly formatting
+      vim.opt_local.expandtab = false
+      vim.opt_local.tabstop = 8
+      vim.opt_local.shiftwidth = 8
+      vim.opt_local.softtabstop = 8
+      vim.opt_local.commentstring = "# %s"
+
+      -- Better folding
+      vim.opt_local.foldmethod = "marker"
+      vim.opt_local.foldmarker = "{{{,}}}"
+    end,
+  })
 end
 
 return M

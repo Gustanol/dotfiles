@@ -112,47 +112,92 @@ M.get_buffer_config = function(bufnr)
   return config, config_dir
 end
 
--- Extract compiler flags from Makefile
+-- Extract compiler flags from Makefile or Makefile.flags
 M.extract_makefile_flags = function(dir)
   dir = dir or vim.fn.getcwd()
+
+  -- Try Makefile.flags first (preferred for kernel projects)
+  local flags_file = dir .. "/Makefile.flags"
   local makefile = dir .. "/Makefile"
 
-  if vim.fn.filereadable(makefile) == 0 then
+  local file_to_read = vim.fn.filereadable(flags_file) == 1 and flags_file or
+      vim.fn.filereadable(makefile) == 1 and makefile or nil
+
+  if not file_to_read then
+    -- No Makefile - check if it's a kernel-like structure
+    if vim.fn.isdirectory(dir .. "/include") == 1 then
+      return {
+        "-nostdinc",
+        "-ffreestanding",
+        "-fno-builtin",
+        "-I" .. dir .. "/include",
+        "-D__KERNEL__",
+      }
+    end
     return {}
   end
 
   local flags = {}
-  local file = io.open(makefile, "r")
+  local file = io.open(file_to_read, "r")
   if not file then
     return flags
   end
 
-  local function expand_vars(str, vars)
-    return (str:gsub("%$%(([%w_]+)%)", function(var)
-      return vars[var] or ""
-    end))
-  end
+  local current_var = nil
+  local continued_line = ""
 
-  local vars = {}
   for line in file:lines() do
-    local name, value = line:match("^%s*([%w_]+)%s*[:+]?=%s*(.+)")
-    if name and value then
-      vars[name] = value
+    -- Remove comments
+    line = line:gsub("#.*$", "")
+
+    -- Handle line continuations
+    if line:match("\\%s*$") then
+      continued_line = continued_line .. line:gsub("\\%s*$", " ")
+      goto continue
+    else
+      line = continued_line .. line
+      continued_line = ""
     end
 
-    local cflags = line:match("CFLAGS%s*[+:]*=%s*(.+)")
+    -- Extract CFLAGS, ASFLAGS, etc.
+    local var_name, value = line:match("^%s*([A-Z_]+)%s*[+:]?=%s*(.*)$")
 
-    if cflags then
-      cflags = expand_vars(cflags, vars)
-      for flag in cflags:gmatch("%S+") do
+    if var_name and (var_name == "CFLAGS" or var_name == "ASFLAGS") then
+      for flag in value:gmatch("%S+") do
         if flag:match("^%-") then
-          table.insert(flags, flag)
+          -- Handle -I flags specially
+          if flag:match("^%-I") then
+            local path = flag:sub(3)
+            -- Convert relative to absolute
+            if path:match("^%./") then
+              path = dir .. "/" .. path:sub(3)
+            elseif not path:match("^/") then
+              path = dir .. "/" .. path
+            end
+            table.insert(flags, "-I" .. path)
+          else
+            table.insert(flags, flag)
+          end
         end
       end
     end
+
+    ::continue::
   end
 
   file:close()
+
+  -- If no flags found but include/ exists, use defaults
+  if #flags == 0 and vim.fn.isdirectory(dir .. "/include") == 1 then
+    flags = {
+      "-nostdinc",
+      "-ffreestanding",
+      "-fno-builtin",
+      "-I" .. dir .. "/include",
+      "-D__KERNEL__",
+    }
+  end
+
   return flags
 end
 

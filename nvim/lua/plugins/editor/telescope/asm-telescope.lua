@@ -8,6 +8,7 @@ return {
     local conf = require("telescope.config").values
     local actions = require("telescope.actions")
     local action_state = require("telescope.actions.state")
+    local asm_group = vim.api.nvim_create_augroup("AssemblyConfig", { clear = true })
 
     local function asm_symbols()
       local ft = vim.bo.filetype
@@ -40,37 +41,51 @@ return {
       end
 
       pickers
-        .new({}, {
-          prompt_title = "Assembly Symbols",
-          finder = finders.new_table({
-            results = symbols,
-            entry_maker = function(entry)
-              return {
-                value = entry,
-                display = string.format("[%s] %s", entry.type, entry.text),
-                ordinal = entry.text,
-                lnum = entry.lnum,
-              }
+          .new({}, {
+            prompt_title = "Assembly Symbols",
+            finder = finders.new_table({
+              results = symbols,
+              entry_maker = function(entry)
+                return {
+                  value = entry,
+                  display = string.format("[%s] %s", entry.type, entry.text),
+                  ordinal = entry.text,
+                  lnum = entry.lnum,
+                }
+              end,
+            }),
+            sorter = conf.generic_sorter({}),
+            attach_mappings = function(prompt_bufnr, map)
+              actions.select_default:replace(function()
+                actions.close(prompt_bufnr)
+                local selection = action_state.get_selected_entry()
+                vim.api.nvim_win_set_cursor(0, { selection.lnum, 0 })
+              end)
+              return true
             end,
-          }),
-          sorter = conf.generic_sorter({}),
-          attach_mappings = function(prompt_bufnr, map)
-            actions.select_default:replace(function()
-              actions.close(prompt_bufnr)
-              local selection = action_state.get_selected_entry()
-              vim.api.nvim_win_set_cursor(0, { selection.lnum, 0 })
-            end)
-            return true
-          end,
-        })
-        :find()
+          })
+          :find()
     end
 
     vim.api.nvim_create_user_command("AsmSymbols", asm_symbols, {})
+    vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+      pattern = { "*.s", "*.S" },
+      callback = function()
+        vim.bo.filetype = "gas"
+      end,
+      group = asm_group,
+    })
 
     vim.api.nvim_create_autocmd("FileType", {
       pattern = { "asm", "gas" },
       callback = function()
+        vim.bo.tabstop = 4
+        vim.bo.shiftwidth = 4
+        vim.bo.expandtab = true
+        vim.bo.commentstring = "# %s"
+        vim.wo.colorcolumn = "80"
+        vim.cmd([[match ExtraWhitespace /\s\+$/]])
+
         vim.keymap.set(
           "n",
           "<leader>ay",
@@ -78,6 +93,14 @@ return {
           { buffer = true, silent = true, desc = "Assembly: Symbols" }
         )
       end,
+      group = asm_group,
     })
+
+    vim.keymap.set(
+      "n",
+      "<leader>ah",
+      "<cmd>AsmCheatsheet<cr>",
+      { noremap = true, silent = true, desc = "Assembly: Cheatsheet" }
+    )
   end,
 }

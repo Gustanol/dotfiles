@@ -3,10 +3,8 @@ local action_state = require("telescope.actions.state")
 local c_generator = require("commands.c-generator")
 local asm = require("commands.asm-commands")
 local asm_cheatsheet = require("commands.asm-cheatsheet")
-local asm_group = vim.api.nvim_create_augroup("AssemblyConfig", { clear = true })
 local project_setup = require("commands.project-setup")
 local ccls_commands = require("commands.ccls-commands")
-
 -------------------------------------------- C commands
 vim.api.nvim_create_user_command("CCreateProject", function()
   c_generator.create_c_project()
@@ -34,6 +32,7 @@ vim.api.nvim_create_user_command("CclsPause", ccls_commands.pause_indexing, {})
 vim.api.nvim_create_user_command("CclsResume", ccls_commands.resume_indexing, {})
 vim.api.nvim_create_user_command("CclsClearCache", ccls_commands.clear_cache, {})
 vim.api.nvim_create_user_command("CclsStatus", ccls_commands.show_status, {})
+vim.api.nvim_create_user_command("CclsDebugCompletion", ccls_commands.debug_completion, {})
 -------------------------------------------- C commands
 
 local function change_dir(prompt_bufnr)
@@ -83,42 +82,10 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
 ------------------------------------------- Assembly commands
 vim.api.nvim_create_user_command("AsmSyscalls", asm.show_syscalls, {})
 vim.api.nvim_create_user_command("AsmRegisters", asm.show_registers, {})
-
 vim.api.nvim_create_user_command("AsmNewProject", asm.create_project, {})
-
+vim.api.nvim_create_user_command("AsmGotoInclude", asm.goto_include, {})
 vim.api.nvim_create_user_command("AsmCheatsheet", asm_cheatsheet.show_cheatsheet, {})
-
-vim.keymap.set(
-  "n",
-  "<leader>ah",
-  "<cmd>AsmCheatsheet<cr>",
-  { noremap = true, silent = true, desc = "Assembly: Cheatsheet" }
-)
-
 ------------------------------------------ Assembly commands
-
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = { "*.s", "*.S" },
-  callback = function()
-    vim.bo.filetype = "gas"
-  end,
-  group = asm_group,
-})
-
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "asm", "gas" },
-  callback = function()
-    vim.bo.tabstop = 4
-    vim.bo.shiftwidth = 4
-    vim.bo.expandtab = true
-    vim.bo.commentstring = "# %s"
-
-    vim.wo.colorcolumn = "80"
-
-    vim.cmd([[match ExtraWhitespace /\s\+$/]])
-  end,
-  group = asm_group,
-})
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
@@ -130,6 +97,9 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.linebreak = true
+
     vim.keymap.set("n", "]]", "/^#\\+<CR>", { buffer = true, desc = "Next heading" })
     vim.keymap.set("n", "[[", "?^#\\+<CR>", { buffer = true, desc = "Previous heading" })
 

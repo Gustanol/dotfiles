@@ -47,6 +47,12 @@ return {
                         action = "cd ~/projects/dotfiles/nvim/ | Telescope find_files",
                     },
                     {
+                        icon = "  ",
+                        desc = "Notes                        ",
+                        key = "N",
+                        action = "cd ~/notes/ | edit main.md",
+                    },
+                    {
                         icon = "  ",
                         desc = "Terminal",
                         key = "t",

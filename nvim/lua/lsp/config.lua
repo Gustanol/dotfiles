@@ -63,6 +63,29 @@ function M.on_attach(client, bufnr)
       callback = vim.lsp.buf.clear_references,
     })
   end
+
+  if client.name:match("^ccls_") then
+    vim.api.nvim_create_autocmd("CursorHold", {
+      buffer = bufnr,
+      callback = function()
+        local params = vim.lsp.util.make_position_params(0, 'utf-8')
+        vim.lsp.buf_request(bufnr, 'textDocument/hover', params, function(err, result)
+          if result and result.contents then
+            local contents = type(result.contents) == "string" and result.contents or
+                (type(result.contents) == "table" and result.contents.value)
+            if contents then
+              local header = contents:match("#include%s*<([^>]+)>") or
+                  contents:match("#include%s*\"([^\"]+)\"")
+              if header then
+                -- Store for later use
+                vim.b[bufnr].last_symbol_header = header
+              end
+            end
+          end
+        end)
+      end,
+    })
+  end
 end
 
 return M

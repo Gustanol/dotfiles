@@ -326,4 +326,28 @@ indent_style = tab
   vim.cmd("edit src/main.s")
 end
 
+-- Jump to include file (supports both #include and .include)
+M.goto_include = function()
+  local line = vim.api.nvim_get_current_line()
+
+  -- Match various include formats
+  local include_file = line:match('#include%s+"([^"]+)"') or
+      line:match("#include%s+<([^>]+)>") or
+      line:match('%.include%s+"([^"]+)"')
+
+  if include_file then
+    local resolved = require("core.asm-includes").resolve_include(include_file)
+
+    local ok = pcall(function()
+      return vim.cmd
+    end, "edit " .. vim.fn.fnameescape(resolved))
+    if not ok then
+      vim.notify("Include file not found: " .. include_file, vim.log.levels.WARN)
+    end
+  else
+    -- Fallback to vim's gf
+    vim.cmd("normal! gf")
+  end
+end
+
 return M

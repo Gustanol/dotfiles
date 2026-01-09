@@ -12,6 +12,7 @@ local function get_kernel_headers_path()
   local kernel_release = vim.fn.system("uname -r"):gsub("\n", "")
   local paths = {
     "~/qemu-lab/linux-6.17.8/",
+    --"/lib/modules/" .. kernel_release .. "/build",
     "/usr/src/linux-headers-" .. kernel_release,
     "/usr/src/kernels/" .. kernel_release,
   }
@@ -25,7 +26,7 @@ local function get_kernel_headers_path()
   return nil
 end
 
--- Auto-detect project type (fallback if no config file)
+-- Auto-detect project type
 local function auto_detect_project_type(dir)
   if vim.fn.filereadable(dir .. "/Kconfig") == 1 and
       vim.fn.isdirectory(dir .. "/arch") == 1 and
@@ -39,7 +40,7 @@ local function auto_detect_project_type(dir)
     return "linux_module"
   end
 
-  return "userspace"
+  return "custom"
 end
 
 -- Get GCC include paths
@@ -57,7 +58,7 @@ local function get_gcc_includes()
   return result
 end
 
--- Build compiler flags based on project type
+-- Build compiler flags
 local function build_compiler_flags(config, config_dir)
   local flags = {
     excludeArgs = {},
@@ -110,7 +111,6 @@ local function build_compiler_flags(config, config_dir)
     end, get_gcc_includes())
   end
 
-  -- Add custom include paths
   for _, path in ipairs(config.include_paths or {}) do
     table.insert(flags.extraArgs, "-I" .. path)
   end
@@ -118,8 +118,8 @@ local function build_compiler_flags(config, config_dir)
   return flags
 end
 
--- Track active CCLS instances by root
-local active_instances = {}
+-- Track configured roots to avoid duplicates
+local configured_roots = {}
 
 -- Setup CCLS on buffer enter
 local function setup_ccls_for_buffer(bufnr)
@@ -141,70 +141,95 @@ local function setup_ccls_for_buffer(bufnr)
     vim.b[bufnr].project_config_dir = config_dir
   end
 
-  -- Check if we already have an instance for this root
-  if active_instances[config_dir] then
-    -- Just attach to existing instance
+  -- Generate unique server name based on root path
+  local root_hash = vim.fn.sha256(config_dir):sub(1, 8)
+  local server_name = "ccls_" .. root_hash
+
+  -- Store server name in buffer for tracking
+  vim.b[bufnr].ccls_server_name = server_name
+
+  -- Check if server is already running for this root
+  local existing_client = nil
+  for _, client in ipairs(vim.lsp.get_clients({ name = server_name })) do
+    if client.config.root_dir == config_dir then
+      existing_client = client
+      break
+    end
+  end
+
+  if existing_client then
+    -- Attach existing client to this buffer
+    vim.lsp.buf_attach_client(bufnr, existing_client.id)
     return
   end
 
-  local compiler_flags = build_compiler_flags(config, config_dir)
+  -- Setup new instance if not already configured
+  if not configured_roots[config_dir] then
+    local compiler_flags = build_compiler_flags(config, config_dir)
 
-  -- Mark this root as having an active instance
-  active_instances[config_dir] = true
+    local lsp_config = {
+      name = server_name,
+      cmd = { "ccls" },
+      root_dir = config_dir,
 
-  vim.lsp.config("ccls", {
-    name = "ccls_" .. vim.fn.fnamemodify(config_dir, ":t"), -- Unique name per root
-    capabilities = lsp.capabilities,
-    on_attach = function(client, buf)
-      lsp.on_attach(client, buf)
+      capabilities = lsp.capabilities,
 
-      if not vim.b[buf].ccls_notified then
-        local msg = "CCLS: " .. config.project_type:gsub("_", " ")
-        if config_dir then
+      on_attach = function(client, buf)
+        lsp.on_attach(client, buf)
+
+        if not vim.b[buf].ccls_notified then
+          local msg = "CCLS: " .. config.project_type:gsub("_", " ")
           msg = msg .. "\nRoot: " .. vim.fn.fnamemodify(config_dir, ":~")
+          vim.notify(msg, vim.log.levels.INFO)
+          vim.b[buf].ccls_notified = true
         end
-        vim.notify(msg, vim.log.levels.INFO)
-        vim.b[buf].ccls_notified = true
-      end
-    end,
+      end,
 
-    on_exit = function()
-      -- Clean up when instance exits
-      active_instances[config_dir] = nil
-    end,
+      on_exit = function()
+        configured_roots[config_dir] = nil
+        vim.notify("CCLS stopped: " .. vim.fn.fnamemodify(config_dir, ":~"), vim.log.levels.INFO)
+      end,
 
-    cmd = { "ccls" },
-    root_dir = config_dir,
+      filetypes = { "c", "cpp", "h", "objc", "objcpp" },
 
-    init_options = {
-      cache = {
-        directory = vim.fn.stdpath("cache") .. "/ccls/" .. vim.fn.fnamemodify(config_dir, ":t"),
-        retainInMemory = 1, -- Keep less in memory
-      },
-      compilationDatabaseDirectory = config_dir,
-      index = {
-        threads = 1,      -- Reduce to 1 thread for lower CPU usage
-        onChange = false, -- Don't reindex on every change
-        initialBlacklist = { ".*test.*", ".*build.*", ".*/\\..*" },
-      },
-      completion = {
-        detailedLabel = true,
-        enableSnippetInsertion = false, -- Reduce CPU for completion
-        include = {
-          maxPathSize = 30,
-          suffixWhitelist = { ".h", ".hpp", ".hh", ".hxx" },
-          whitelist = {},
-          blacklist = {},
+      init_options = {
+        cache = {
+          directory = vim.fn.stdpath("cache") .. "/ccls/" .. root_hash,
+          retainInMemory = 1,
         },
+        compilationDatabaseDirectory = config_dir,
+        index = {
+          threads = 1,
+          onChange = false,
+          initialBlacklist = { ".*test.*", ".*build.*", ".*/\\..*" },
+        },
+        completion = {
+          detailedLabel = true,
+          enableSnippetInsertion = false,
+          placeholder = false,
+          include = {
+            maxPathSize = 30,
+            suffixWhitelist = { ".h", ".hpp", ".hh", ".hxx" },
+          },
+        },
+        diagnostics = {
+          onOpen = 0,
+          onChange = 0,
+        },
+        client = {
+          snippetSupport = false,
+        },
+        clang = compiler_flags,
       },
-      client = {
-        snippetSupport = false, -- Disable snippets to reduce CPU
-      },
-      clang = compiler_flags,
-    },
+    }
 
-    filetypes = { "c", "h", "cpp", "objc", "objcpp" },
-  })
+    configured_roots[config_dir] = server_name
+
+    -- Start the LSP client
+    vim.lsp.start(lsp_config, {
+      bufnr = bufnr,
+    })
+  end
 end
 
 -- Setup on C/C++ file open
@@ -212,6 +237,5 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = { "c", "cpp", "h", "objc", "objcpp" },
   callback = function(ev)
     setup_ccls_for_buffer(ev.buf)
-    vim.lsp.enable("ccls")
   end,
 })

@@ -16,6 +16,7 @@ return {
       local cmp = require("cmp")
       local luasnip = require("luasnip")
       local lspkind = require("lspkind")
+      local symbol_headers = {}
       local lspkind_format = lspkind.cmp_format({
         maxwidth = 50,
         ellipsis_char = "...",
@@ -37,7 +38,7 @@ return {
           Text = " ",
           Snippet = " ",
           Keyword = " ",
-          Reference = "📎",
+          Reference = " ",
           Folder = " ",
           File = " ",
         },
@@ -96,8 +97,6 @@ return {
             max_item_count = 30, -- Limit LSP items to reduce processing
             priority = 1000,
             entry_filter = function(entry)
-              -- Filter out very long completion items that cause CPU spikes
-              local kind = entry:get_kind()
               local item = entry:get_completion_item()
 
               -- Skip items with excessively long labels/details
@@ -121,33 +120,79 @@ return {
           },
         }),
         formatting = {
+          fields = { "abbr", "kind", "menu" },
           format = function(entry, vim_item)
-            -- first apply the normal lspkind formatting
+            -- First apply the normal lspkind formatting
             vim_item = lspkind_format(entry, vim_item)
 
-            -- Now override menu labels
-            vim_item.menu = ({
-              nvim_lsp = "[LSP]",
-              buffer = "[BUF]",
-              path = "[PATH]",
-            })[entry.source.name]
+            if #vim_item.abbr > 40 then
+              vim_item.abbr = vim_item.abbr:sub(1, 37) .. "..."
+            end
 
-            -- If from LSP, try to extract header info
+            -- For LSP items, extract and show header information
             if entry.source.name == "nvim_lsp" then
               local item = entry:get_completion_item()
-              if item.detail then
-                -- match something like: #include "foo.h" or <foo.hpp>
-                local header = item.detail:match('#include ["<]([^">]+)[">]')
-                if header then
-                  vim_item.menu = "[" .. header .. "]"
-                else
-                  -- fallback if detail contains .h/.hpp
-                  local short = item.detail:match("([^/]+%.h[^/]*)$")
-                      or item.detail:match("([^/]+%.hpp[^/]*)$")
-                  if short then
-                    vim_item.menu = "[" .. short .. "]"
+              local header = nil
+
+              -- Method 1: Check labelDetails (newer LSP spec)
+              if item.labelDetails and item.labelDetails.description then
+                header = item.labelDetails.description:match("<([^>]+)>") or
+                    item.labelDetails.description:match('"([^"]+)"')
+              end
+
+              -- Method 2: Check detail field (common in CCLS)
+              if not header and item.detail then
+                -- Try to extract header from various formats:
+                -- Format: "Type -> header.h"
+                header = item.detail:match("->%s*([%w/_.-]+%.h[px]*)")
+
+                -- Format: "#include <header.h>"
+                if not header then
+                  header = item.detail:match("#include%s*<([^>]+)>") or
+                      item.detail:match("#include%s*\"([^\"]+)\"")
+                end
+
+                -- Format: Just the header filename
+                if not header then
+                  header = item.detail:match("([%w/_.-]+%.h[px]*)$")
+                end
+
+                -- Format: Path with .h extension anywhere
+                if not header then
+                  for h in item.detail:gmatch("([%w/_.-]*%.h[px]*)") do
+                    header = h
+                    break
                   end
                 end
+              end
+
+              -- Method 3: Check data field (CCLS specific)
+              if not header and item.data then
+                if type(item.data) == "table" and item.data.location then
+                  local uri = item.data.location.uri
+                  if uri then
+                    header = uri:match("([^/]+%.h[px]*)$")
+                  end
+                end
+              end
+
+              -- Method 4: Check documentation
+              if not header and item.documentation then
+                local doc = type(item.documentation) == "string" and item.documentation or
+                    (type(item.documentation) == "table" and item.documentation.value)
+                if doc then
+                  header = doc:match("#include%s*<([^>]+)>") or
+                      doc:match("#include%s*\"([^\"]+)\"")
+                end
+              end
+
+              if header then
+                -- Clean up the header path (show only filename or key path)
+                local short_header = header:match("([^/]+/[^/]+)$") or header:match("([^/]+)$") or header
+                symbol_headers[item.label] = short_header
+                vim_item.menu = vim_item.menu .. " [" .. short_header .. "]"
+              elseif symbol_headers[item.label] then
+                vim_item.menu = vim_item.menu .. " [" .. symbol_headers[item.label] .. "]"
               end
             end
 

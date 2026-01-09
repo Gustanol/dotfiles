@@ -32,7 +32,7 @@ opt.undofile = false
 
 opt.termguicolors = true
 opt.number = true
-opt.mouse = "n"
+--opt.mouse = "n"
 vim.opt.mousemodel = "extend"
 opt.relativenumber = true
 opt.signcolumn = "yes:1"

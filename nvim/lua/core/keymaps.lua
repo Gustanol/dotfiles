@@ -24,6 +24,8 @@ vim.api.nvim_create_autocmd("FileType", {
       "<cmd>AsmRegisters<cr>",
       vim.tbl_extend("force", opts, { desc = "Assembly: Registers" })
     )
+
+    vim.keymap.set("n", "gf", ":AsmGotoInclude<CR>", opts)
   end,
 })
 
