@@ -3,7 +3,7 @@ return {
   cmd = "ASToggle",
   event = { "InsertLeave", "TextChanged" },
   keys = {
-    { "<leader>st", "<cmd>ASToggle<CR>", desc = "Toggle auto-save" },
+    { "<cmd>ASToggle<CR>", desc = "Toggle auto-save" },
   },
   opts = {
     enabled = true,
@@ -20,14 +20,10 @@ return {
         return false
       end
 
-      if utils.not_in(fn.getbufvar(buf, "&filetype"), { "oil" }) and fn.expand("%:t") == "" then
-        return false
-      end
-
       local clients = vim.lsp.get_clients({ bufnr = buf })
       for _, client in pairs(clients) do
         if
-          client.server_capabilities.documentFormattingProvider and vim.bo[buf].modified == false
+            client.server_capabilities.documentFormattingProvider and vim.bo[buf].modified == false
         then
           return false
         end
@@ -49,25 +45,5 @@ return {
   },
   config = function(_, opts)
     require("auto-save").setup(opts)
-
-    vim.api.nvim_create_user_command("ASDebug", function()
-      local current_buf = vim.api.nvim_get_current_buf()
-      print("Buffer: " .. current_buf)
-      print("Modified: " .. tostring(vim.bo.modified))
-      print("Filetype: " .. vim.bo.filetype)
-      print("Filename: " .. vim.fn.expand("%:t"))
-
-      local clients = vim.lsp.get_clients({ bufnr = current_buf })
-      print("Active LSP clients: " .. #clients)
-      for _, client in pairs(clients) do
-        print(
-          "  - "
-            .. client.name
-            .. " (formatting: "
-            .. tostring(client.server_capabilities.documentFormattingProvider)
-            .. ")"
-        )
-      end
-    end, { desc = "Debug autosave status" })
   end,
 }

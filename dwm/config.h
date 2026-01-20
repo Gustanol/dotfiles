@@ -74,10 +74,9 @@ static const char *dmenucmd[] = {
     "dmenu_run", "-m",      dmenumon, "-fn",    dmenufont, "-nb",     col_gray1,
     "-nf",       col_gray3, "-sb",    col_cyan, "-sf",     col_gray4, NULL};
 static const char *termcmd[] = {"st", NULL};
-static const char *browser[] = {"firefox", NULL};
+static const char *browser[] = {"librewolf", NULL};
 static const char *fmanager[] = {"pcmanfm", NULL};
 static const char *nvim[] = {"st", "-e", "nvim", NULL};
-static const char *marktext[] = {"marktext", NULL};
 
 static const Key keys[] = {
     /* modifier                     key        function        argument */
@@ -86,7 +85,6 @@ static const Key keys[] = {
     {MODKEY, XK_b, spawn, {.v = browser}},
     {MODKEY, XK_e, spawn, {.v = fmanager}},
     {MODKEY, XK_n, spawn, {.v = nvim}},
-    {MODKEY, XK_m, spawn, {.v = marktext}},
     {MODKEY, XK_y, togglebar, {0}},
     {MODKEY, XK_j, focusstack, {.i = +1}},
     {MODKEY, XK_k, focusstack, {.i = -1}},

@@ -24,15 +24,15 @@ end, { desc = "Make project" })
 
 -- Register commands
 vim.api.nvim_create_user_command("ProjectSetup", project_setup.create_project_config, {})
+vim.api.nvim_create_user_command("ProjectQuickKernel", project_setup.quick_kernel_setup, {})
+vim.api.nvim_create_user_command("ProjectEdit", project_setup.edit_ccls, {})
 vim.api.nvim_create_user_command("ProjectShow", project_setup.show_project_config, {})
-vim.api.nvim_create_user_command("ProjectEdit", project_setup.edit_project_config, {})
 
 vim.api.nvim_create_user_command("CclsOptimize", ccls_commands.optimize, {})
 vim.api.nvim_create_user_command("CclsPause", ccls_commands.pause_indexing, {})
 vim.api.nvim_create_user_command("CclsResume", ccls_commands.resume_indexing, {})
 vim.api.nvim_create_user_command("CclsClearCache", ccls_commands.clear_cache, {})
 vim.api.nvim_create_user_command("CclsStatus", ccls_commands.show_status, {})
-vim.api.nvim_create_user_command("CclsDebugCompletion", ccls_commands.debug_completion, {})
 -------------------------------------------- C commands
 
 local function change_dir(prompt_bufnr)
@@ -90,7 +90,23 @@ vim.api.nvim_create_user_command("AsmCheatsheet", asm_cheatsheet.show_cheatsheet
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function()
-    require("commands.markdown-commands")
+    local md = require("commands.markdown-commands")
+
+    vim.keymap.set("n", "gx", md.open_media, { desc = "Open media externally", buffer = true })
+    vim.keymap.set("n", "gf", md.follow_link, {
+      desc = "Follow markdown link",
+      buffer = true,
+    })
+  end,
+})
+
+vim.api.nvim_create_autocmd('BufWinEnter', {
+  group = vim.api.nvim_create_augroup('RenderMarkdownHoverFix', { clear = true }),
+  callback = function()
+    if vim.api.nvim_win_get_config(0).relative ~= "" then
+      -- This is a floating window
+      require('render-markdown').disable()
+    end
   end,
 })
 

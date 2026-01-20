@@ -3,7 +3,9 @@ nvim-lazyvim-backup
 nvimd
 undo
 swap
-*.0
+*.o
+.nvim-project.json
+.ccls
 dwm/dwm
 dmenu/dmenu
 st/st

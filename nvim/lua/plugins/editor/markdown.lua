@@ -1,15 +1,5 @@
 return {
   {
-    "iamcco/markdown-preview.nvim",
-    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-    ft = { "markdown" },
-    build = function() vim.fn["mkdp#util#install"]() end,
-    keys = {
-      { "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown Preview" },
-    },
-  },
-
-  {
     "MeanderingProgrammer/render-markdown.nvim",
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
@@ -22,9 +12,12 @@ return {
         sign = false,
         icons = { "󰲠 ", "󰲢 ", "󰲤 ", "󰲦 ", "󰲨 ", "󰲪 " },
       },
+      exclude = {
+        buftypes = { 'nofile' },
+      },
       code = {
         enabled = true,
-        sign = false,
+        sign = true,
         width = "block",
         right_pad = 1,
         left_pad = 1,
@@ -32,9 +25,6 @@ return {
       bullet = {
         enabled = true,
         icons = { "•", "◦", "▪", "▫" },
-      },
-      latex = {
-        enabled = false,
       },
     },
     ft = { "markdown" },

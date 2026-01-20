@@ -11,7 +11,12 @@ local function get_media_path()
 
   for _, pattern in ipairs(patterns) do
     for path in line:gmatch(pattern) do
-      return path
+      local current_file = vim.api.nvim_buf_get_name(0)
+      local current_dir  = vim.fn.fnamemodify(current_file, ":h")
+
+      local full_path    = current_dir .. "/" .. path
+
+      return full_path
     end
   end
   return nil
@@ -39,20 +44,17 @@ function M.open_media()
     vim.notify("Unsupported media type: " .. ext, vim.log.levels.WARN)
     return
   end
-
+  print(cmd)
   vim.fn.system(cmd)
-  vim.notify("Opened " .. path, vim.log.levels.INFO)
 end
-
-vim.keymap.set("n", "gx", M.open_media, { desc = "Open media externally", buffer = true })
 
 function M.follow_link()
   local line = vim.api.nvim_get_current_line()
   local col = vim.api.nvim_win_get_cursor(0)[2] + 1 -- Lua is 1-based
 
   local patterns = {
-    { "%[%[([^|%]]+)",  2 }, -- [[path]] or [[path|alias]]
-    { "%[.-%]%((.-)%)", 2 }, -- [text](path)
+    { "%[%[([^|%]]+)|?[^%]]*%]%]", 2 }, -- [[path|label]] or [[path]]
+    { "%[.-%]%((.-)%)",            2 }, -- [text](path)
   }
 
   local link_path = nil
@@ -94,16 +96,12 @@ function M.follow_link()
 
   full_path = vim.fn.resolve(vim.fn.expand(full_path))
 
-  if vim.fn.filereadable(full_path) == 1 then
-    vim.cmd("edit " .. vim.fn.fnameescape(full_path))
-  else
-    vim.notify("File not found: " .. full_path, vim.log.levels.WARN)
+  local dir = vim.fn.fnamemodify(full_path, ":h")
+  if vim.fn.isdirectory(dir) == 0 then
+    vim.fn.mkdir(dir, "p")
   end
-end
 
-vim.keymap.set("n", "gf", M.follow_link, {
-  desc = "Follow markdown link",
-  buffer = true,
-})
+  vim.cmd("edit " .. vim.fn.fnameescape(full_path))
+end
 
 return M

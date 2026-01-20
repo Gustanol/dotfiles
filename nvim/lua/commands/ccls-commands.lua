@@ -57,24 +57,4 @@ M.optimize = function()
   vim.notify("CCLS optimized. Lower CPU usage expected.", vim.log.levels.INFO)
 end
 
--- Add to lua/commands/ccls-commands.lua
-M.debug_completion = function()
-  local params = vim.lsp.util.make_position_params(0, 'utf-8')
-
-  vim.lsp.buf_request(0, 'textDocument/completion', params, function(err, result)
-    if err then
-      vim.notify("Error: " .. vim.inspect(err), vim.log.levels.ERROR)
-      return
-    end
-
-    if result and result.items and #result.items > 0 then
-      local item = result.items[1]
-      vim.notify(
-        "First completion item:\n" .. vim.inspect(item),
-        vim.log.levels.INFO
-      )
-    end
-  end)
-end
-
 return M
